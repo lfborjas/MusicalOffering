@@ -47,7 +47,7 @@ $ slideshow talk.rkt
  (small (colorize (t "Composing functions composing music") "gray")))
 
 (slide
- #:title "Very Basic Haskell"
+ #:title "A Little Haskell"
 
  (para (haskell "simple a b = a + b"
                 "simple 1 1"
@@ -66,7 +66,7 @@ $ slideshow talk.rkt
                 "--[3,4,5]")))
 
 (slide
- #:title "Very Basic Euterpea"
+ #:title "A taste of Euterpea"
 
  (para (haskell "concertA = (A, 4)"
                 "quarterNote = 1/4"
@@ -85,10 +85,26 @@ $ slideshow talk.rkt
 
 
 (slide
- #:title "Very Basic Types")
+ #:title "A soupcon of Types")
 
 (slide
  #:title "Functions of all orders")
+
+(slide
+ #:title "Curry in a hurry"
+ ; add both currying and the $ and . operators?
+ )
+
+(slide
+ #:title "To infinity, and beyond")
+
+(slide
+ #:title "So you want to write a canon?"
+ 'alts ;; iterative approach
+ (list (list )))
+
+(slide
+ #:title "A more complex problem")
 
 
 #|
