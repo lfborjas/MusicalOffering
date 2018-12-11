@@ -80,11 +80,9 @@ $ slideshow talk.rkt
  (para (haskell "doReMi = c 4 qn :+: d 4 qn :+: e 4 qn"
                 "cMaj   = c 4 qn :=: e 4 qn :=: g 4 qn")))
 
+
 (slide
- (para "This is some haskell")
- (para (haskell "simple :: Int -> Int -> Int"
-                "simple x = let a = b"
-                "           in x :+: x")))
+ #:title "Very Basic Types")
 
 
 #|
