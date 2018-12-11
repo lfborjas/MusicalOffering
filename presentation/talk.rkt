@@ -31,8 +31,9 @@ $ slideshow talk.rkt
       (tt token)))
 
 (define (haskell src)
-  (define tokens (string-split src " " #:trim? #f))
-  (apply para (map syntax-color tokens)))
+  (define tokens (string-split src #:trim? #t))
+  (define leading-space  (or (regexp-match #px"^\\s+" src) '("")))
+  (apply para (cons (tt (car leading-space)) (map syntax-color tokens))))
 
 ;;; And now, the actual presentation:
 ;; slideshow reference: https://docs.racket-lang.org/slideshow/Creating_Slide_Presentations.html
