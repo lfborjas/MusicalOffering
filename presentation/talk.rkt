@@ -78,7 +78,10 @@ $ slideshow talk.rkt
 
  'next
  (para (haskell "doReMi = c 4 qn :+: d 4 qn :+: e 4 qn"
-                "cMaj   = c 4 qn :=: e 4 qn :=: g 4 qn")))
+                "cMaj   = c 4 qn :=: e 4 qn :=: g 4 qn"
+                "play doReMi"
+                "play cMaj"
+                "play (doReMi :+: cMaj)")))
 
 
 (slide
