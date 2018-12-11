@@ -87,6 +87,9 @@ $ slideshow talk.rkt
 (slide
  #:title "Very Basic Types")
 
+(slide
+ #:title "Functions of all orders")
+
 
 #|
 Outline:
