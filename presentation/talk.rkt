@@ -15,25 +15,29 @@ $ slideshow talk.rkt
 
 ;;; First, some helper functions:
 
+;; Takes any number of lines Haskell code, as strings, and applies syntax
+;; highlighting to each. Preserves leading whitespace.
 ;; Color reference: https://docs.racket-lang.org/draw/color-database___.html
 ;; and regexes: https://docs.racket-lang.org/reference/regexp.html
-(define (syntax-color token)
-  (define match (λ (p) (regexp-match p token)))
-  (define color (cond [(match #px"[[:digit:]]")                 "ForestGreen"] ;; numbers
-                      [(or (match #px"[[:upper:]][^[:space:]]")
-                           (match #px":[^[:alpha:]]:"))         "SteelBlue"] ;; types and type constructors
-                      [(match #rx"(let|in|case|where)")         "Orange"] ;; keywords
-                      [(match #px"[[:alpha:]]")                 "DimGray"] ;; alphanumeric and common functions
-                      [(match #px"[^[:alpha:]]")                "DarkGoldenrod"] ;; other symbols
-                      [else #f]))
-  (if color
-      (colorize (tt token) color)
-      (tt token)))
-
-(define (haskell src)
-  (define tokens (string-split src #:trim? #t))
-  (define leading-space  (or (regexp-match #px"^\\s+" src) '("")))
-  (apply para (cons (tt (car leading-space)) (map syntax-color tokens))))
+(define (haskell . lines)
+  (define (syntax-color token)
+    (define match (λ (p) (regexp-match p token)))
+    (define color (cond [(match #px"[[:digit:]]")                 "ForestGreen"] ;; numbers
+                        [(or (match #px"[[:upper:]][^[:space:]]")
+                             (match #px":[^[:alpha:]]:"))         "SteelBlue"] ;; types and type constructors
+                        [(match #rx"(let|in|case|where)")         "Orange"] ;; keywords
+                        [(match #px"[[:alpha:]]")                 "DimGray"] ;; alphanumeric and common functions
+                        [(match #px"[^[:alpha:]]")                "DarkGoldenrod"] ;; other symbols
+                        [else #f]))
+    (if color
+        (colorize (tt token) color)
+        (tt token)))
+  (define tokens (λ (line) (string-split line #:trim? #t)))
+  (define leading-space (λ (line) (or (regexp-match #px"^\\s+" line) '(""))))
+  (define highlight (λ (line)
+                      (apply para (cons (tt (car (leading-space line)))
+                                        (map syntax-color (tokens line))))))
+  (map highlight lines))
 
 ;;; And now, the actual presentation:
 ;; slideshow reference: https://docs.racket-lang.org/slideshow/Creating_Slide_Presentations.html
@@ -47,8 +51,9 @@ $ slideshow talk.rkt
 
 (slide
  (para "This is some haskell")
- (para (haskell "simple :: Int -> Int -> Int")
-       (haskell "       in map a + b + c")))
+ (para (haskell "simple :: Int -> Int -> Int"
+                "simple x = let a = b"
+                "           in x :+: x")))
 
 
 #|
