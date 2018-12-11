@@ -4,6 +4,16 @@ Exploring Haskell, and Bach's "A musical offering", with [Euterpea](http://www.e
 
 The code in this little repository uses the [Literate Haskell](https://wiki.haskell.org/Literate_programming) style, and was created using [`haskell-mode`](https://wiki.haskell.org/Haskell-mode) in Emacs for easy interactivity.
 
+## Usage
+
+### Presentation
+
+The presentation's slides are provided in a pdf in the `presentation` folder. But if you're crazy (or curious), you can [install Racket](https://download.racket-lang.org/) and run the `talk.rkt` file with `slideshow talk.rkt`.
+
+### Code
+
+You should be able to import the `MusicalOffering.CrabCanon.Performance` module and all functions will be available in a `ghci`. Try `play crabCanon` (requires Euterpea, see the setup section).
+
 ## Setup
 
 To use Euterpea, you need Haskell and a synthesizer. I've had a good degree of success with [Simplesynth](http://notahat.com/simplesynth/).

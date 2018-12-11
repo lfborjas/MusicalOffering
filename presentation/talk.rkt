@@ -35,6 +35,7 @@ $ slideshow talk.rkt
   (apply para (map syntax-color tokens)))
 
 ;;; And now, the actual presentation:
+;; slideshow reference: https://docs.racket-lang.org/slideshow/Creating_Slide_Presentations.html
 
 (slide
  (t "A Musical Offering")
