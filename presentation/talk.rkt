@@ -22,11 +22,11 @@ $ slideshow talk.rkt
 (define (haskell . lines)
   (define (syntax-color token)
     (define match (λ (p) (regexp-match p token)))
-    (define color (cond [(match #px"[[:digit:]]")                 "ForestGreen"] ;; numbers
-                        [(or (match #px"[[:upper:]][^[:space:]]")
-                             (match #px":[^[:alpha:]]:"))         "SteelBlue"] ;; types and type constructors
-                        [(match #rx"(let|in|case|where)")         "Orange"] ;; keywords
-                        [(match #px"[[:alpha:]]")                 "DimGray"] ;; alphanumeric and common functions
+    (define color (cond [(or (match #px"[[:upper:]][^[:space:]]")
+                             (match #px":[^[:alpha:][:digit:]]:")) "SteelBlue"] ;; types and type constructors
+                        [(match #rx"--.*")                        "ForestGreen"] ;; comments
+                        [(match #rx"(let|in|case|where|of)")      "Orange"] ;; keywords
+                        [(match #px"[[:alpha:][:digit:]]")        "DimGray"] ;; alphanumeric and common functions
                         [(match #px"[^[:alpha:]]")                "DarkGoldenrod"] ;; other symbols
                         [else #f]))
     (if color
@@ -47,7 +47,21 @@ $ slideshow talk.rkt
  (small (colorize (t "Composing functions composing music") "gray")))
 
 (slide
- (para "Let's learn some music, and Haskell!"))
+ #:title "Very Basic Haskell"
+
+ (para (haskell "simple a b = a + b"
+                "simple 1 1"
+                "--2"))
+
+ 'next
+ (para (haskell "l = 1:2:3:[]"
+                "--[1,2,3]"))
+ 
+ 'next
+ (para (haskell "add2 [] = []"
+                "add2 (x:xs) = (2 + x) : (add2 xs)"
+                "add2 [1,2,3]"
+                "--[3,4,5]")))
 
 (slide
  (para "This is some haskell")
