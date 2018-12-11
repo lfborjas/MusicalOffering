@@ -3,6 +3,19 @@
 
 Euterpea has a few types that help us express musical ideas, as well as helper functions.
 
+> concertA = (A, 4)
+> quarterNote = 1/4
+> qnA :: Music Pitch
+> qnA  = note quarterNote concertA
+> qnA' = a 4 quarterNote
+
+play qnA
+play qnA'
+
+> doReMi :: Music Pitch
+> doReMi = c 4 qn :+: d 4 qn :+: e 4 qn
+> cMaj   = c 4 qn :=: e 4 qn :=: g 4 qn
+
 
 When "reading" a score or composing new music, we can try to find patterns and express them with functions. A naïve
 approach to the crab canon theme is to just transcribe the notes:

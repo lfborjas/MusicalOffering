@@ -22,7 +22,7 @@ $ slideshow talk.rkt
 (define (haskell . lines)
   (define (syntax-color token)
     (define match (λ (p) (regexp-match p token)))
-    (define color (cond [(or (match #px"[[:upper:]][^[:space:]]")
+    (define color (cond [(or (match #px"^[[:upper:]][^[:space:]]")
                              (match #px":[^[:alpha:][:digit:]]:")) "SteelBlue"] ;; types and type constructors
                         [(match #rx"--.*")                        "ForestGreen"] ;; comments
                         [(match #rx"(let|in|case|where|of)")      "Orange"] ;; keywords
@@ -64,6 +64,21 @@ $ slideshow talk.rkt
                 "add2 (x:xs) = (2 + x) : (add2 xs)"
                 "add2 [1,2,3]"
                 "--[3,4,5]")))
+
+(slide
+ #:title "Very Basic Euterpea"
+
+ (para (haskell "concertA = (A, 4)"
+                "quarterNote = 1/4"
+                "qnA = note quarterNote concertA"))
+
+ 'next
+ (para (haskell "qnA' = a 4 qn"
+                "play qnA'"))
+
+ 'next
+ (para (haskell "doReMi = c 4 qn :+: d 4 qn :+: e 4 qn"
+                "cMaj   = c 4 qn :=: e 4 qn :=: g 4 qn")))
 
 (slide
  (para "This is some haskell")
