@@ -50,4 +50,34 @@ $ slideshow talk.rkt
        (haskell "       in map a + b + c")))
 
 
+#|
+Outline:
+* A tour of haskell basics
+** Function application
+** Basic syntax (precedence)
+** Type annotations
+** Local declarations
+** Pattern matching
+* A tour of Euterpea, and more haskell
+* Playing some music
+* But how? Polymorphic data types
+* Some convenience functions
+* Incremental problem solving
+** How to write a simple melody
+** How to write a simple canon
+*** Unrolled: limited voices, instruments
+*** List functions: deriving foldl
+*** Partial application (currying)
+*** List comprehension
+*** Infinite sequences
+*** All together: a more general canon
+** Trying to solve Bach's crab canon.
+* Conclusions:
+** "Glue": things like higher order fns, partial application/lazy evaluation
+   help define new solutions in terms of previous solutions.
+** That's expressive, but also smart: phrase your problem in terms of already
+   solved problems (the Birchbox Engineering way!)
+** Maybe coding is like music: seeing patterns, putting them together.
+|#
+
 
