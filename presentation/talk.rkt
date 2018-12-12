@@ -25,7 +25,7 @@ $ slideshow talk.rkt
     (define color (cond [(or (match #px"^[[:upper:]][^[:space:]]*")
                              (match #px":[^[:alpha:][:digit:]]:"))     "SteelBlue"] ;; types and type constructors
                         [(match #rx"--.*")                             "ForestGreen"] ;; comments
-                        [(match #rx"(let|in|case|where|of|data|type)") "Orange"] ;; keywords
+                        [(match #rx"^(let|in|case|where|of|data|type)") "Orange"] ;; keywords
                         [(match #px"[[:alpha:][:digit:]]")             "DimGray"] ;; alphanumeric and common functions
                         [(match #px"[^[:alpha:]]")                     "DarkGoldenrod"] ;; other symbols
                         [else #f]))
@@ -49,17 +49,18 @@ $ slideshow talk.rkt
 (slide
  #:title "A Little Haskell"
 
+ (t "Functions!")
  (para (haskell "simple a b = a + b"
-                "simple 1 1"
-                "--2"))
+                "simple 1 1 --2"))
 
  'next
+ (t "Lists! Cons-es!")
  (para (haskell "l = 1:2:3:[]"
                 "--[1,2,3]"
-                "1:[2,3]"
-                "--[1,2,3]"))
+                "1:[2,3]"))
  
  'next
+ (t "Pattern matching!")
  (para (haskell "add2 [] = []"
                 "add2 (x:xs) = (2 + x) : (add2 xs)"
                 "add2 [1,2,3]"
@@ -68,6 +69,7 @@ $ slideshow talk.rkt
 (slide
  #:title "A taste of Euterpea"
 
+ (t "What's a note?")
  (para (haskell "concertA = (A, 4)"
                 "quarterNote = 1/4"
                 "qnA = note quarterNote concertA"))
@@ -77,6 +79,7 @@ $ slideshow talk.rkt
                 "play qnA'"))
 
  'next
+ (t "What are notes good for?")
  (para (haskell "doReMi = c 4 qn :+: d 4 qn :+: e 4 qn"
                 "cMaj   = c 4 qn :=: e 4 qn :=: g 4 qn"
                 "(:+:) (c 4 qn) (e 4 qn)"
@@ -86,9 +89,10 @@ $ slideshow talk.rkt
 
 
 (slide
- #:title "A soupcon of Types"
+ #:title "Types, types, types"
 
  ; type synonyms
+ (t "Type synonyms:")
  (para (haskell "type Octave = Int"
                 "type Pitch  = ( PitchClass, Octave )"
                 "type Dur    = Rational"
@@ -96,7 +100,7 @@ $ slideshow talk.rkt
                 "data PitchClass = Cff | Cf | C | Dff | Cs | Df | Css | D --..."))
 
  'next
- (t "Haskell infers types, but we can tell it:")
+ (t "Haskell infers types, but we can tell it too:")
  ; type annotations, though haskell mostly infers:
  (para (haskell "qn :: Dur"
                 "qn = 1/4"
@@ -106,16 +110,16 @@ $ slideshow talk.rkt
                 "note :: Dur -> Pitch -> Music Pitch")))
 
 (slide
- #:title "Polymorphic types (!)"
+ #:title "A Type of Music"
 
+ (t "Basic units of music:")
  (para (haskell "data Primitive = Note Dur Pitch"
                 "               | Rest Dur"))
 
  'next
- (t "We can think about these constructors as functions:")
+ (t "We can think about these 'constructors' as functions:")
  (para (haskell "Note :: Dur -> Pitch -> Primitive"
-                "Rest :: Dur -> Primitive"
-                "Note (1/4) (A, 4)"))
+                "Rest :: Dur -> Primitive"))
  
  'next
  (t "Okay definition... but notes are more than pitches (percussion, volume, etc.)")
@@ -132,6 +136,7 @@ $ slideshow talk.rkt
 
 (slide
  #:title "A fancier (recursive!) type"
+ (t "Music is not just single notes")
  (para (haskell "data Music a = Prim ( Primitive a )"
                 "             | Music a :+: Music a"
                 "             | Music a :=: Music a"))
@@ -143,30 +148,66 @@ $ slideshow talk.rkt
 (slide
  #:title "Reasoning with types"
   (para (haskell "line :: [ Music a ] -> Music a"
-                "line [] = rest 0"
-                "line (m:ms) = m :+: line ms"
-                "line [c 4 qn, e 4 qn, g 4 qn, c 5 qn]"
-                "chord :: [ Music a ] -> Music a"
-                "chord [c 4 qn, e 4 qn, g 4 qn, c 5 qn]"))
+                 "line [] = rest 0"
+                 "line (m:ms) = m :+: line ms"
+                 "line [c 4 qn, e 4 qn, g 4 qn, c 5 qn]"
+                 "chord :: [ Music a ] -> Music a"
+                 "chord [c 4 qn, e 4 qn, g 4 qn, c 5 qn]"))
 
   (t "A fancier type of pattern matching")
   (para (haskell "majChord :: Music Pitch -> Music Pitch"
                  "majChord (Prim (Note d root)) = "
                  "  note d root :=:"
                  "  note d (trans 4 root) :=:"
-                 "  note d (trans 7 root)")))
+                 "  note d (trans 7 root)"
+                 "majChord _ = error 'only works for notes!'")))
 
 (slide
- #:title "A higher order"
+ #:title "Transcending"
  ; mention things like map and foldl/scanl, plus currying and composition?
  ; what about `$`
- )
+ (t "Guess what these functions do:")
+ (para (haskell "mystery1 :: [ Music a ] -> Music a"
+                "mystery1 ns = foldl1 (:+:) ns"
+                "mystery1 [d 4 qn, fs 4 qn]"
+                "--Prim (Note (1 % 4) (D,4)) :+: Prim (Note (1 % 4) (Fs,4))"))
+ 'next
+ (t "Yep, that's our good old line function, refactored!"))
+
+(slide
+ (t "How about:")
+ (para (haskell "mystery2 :: [ Music a ] -> Music a"
+                "mystery2 ms = line $ map (transpose 12) ms"
+                "mystery1 [d 4 qn, fs 4 qn] :+: mystery2 [d 4 qn, fs 4 qn]"))
+
+ 'next
+ (para "Noticed the" (tt "$") "syntactic sugar?")
+ (para (haskell "line (map (transpose 12) ms)")))
 
 
 (slide
- #:title "To infinity, and beyond"
- ; infinite sequences, list comprehensions
- )
+ #:title "Haskell: Curry"
+
+ (t "Partial application is the default:")
+ (para (haskell "add a b = a + b"
+                "add2 = add 2"
+                "add2 40 --42"
+                "(add 2) 40"))
+ (t "Which comes in handy:")
+ (para (haskell "line  = foldr1 (:+:)"
+                "chord = foldr1 (:=:)")))
+
+(slide
+ #:title "Haskell is lazy"
+
+ (t "And lazy evaluation is also a default:")
+ (para (haskell "forever :: Music x -> [ Music x ]"
+                "forever m = m : forever m"
+                "foreverA o dur = forever $ a o dur"
+                "foreverA4qn = foreverA 4 qn"))
+
+ (t "No explosions, until...")
+ (para (haskell "play $ line $ take 2 foreverA4qn")))
 
 #;
 (slide
@@ -175,7 +216,25 @@ $ slideshow talk.rkt
  (list (list )))
 
 (slide
- #:title "A more complex problem")
+ #:title "Let's use our knowledge for music!"
+ (t "Let's talk about canons:")
+ ; frere jacques photo here
+ )
+
+(slide
+ #:title "Dormez vous?"
+ ; incremental solution to the canon thingy
+ )
+
+(slide
+ #:title "More complex puzzles!"
+ (t "Bach's 'Crab Canon'"))
+
+(slide
+ #:title "Takeaways"
+ (item "Rephrase problems in terms of existing solutions")
+ (item "Find the glue in your language (in Haskell: lazy, partial, high-ordered, functions")
+ (item "Programming can be a tool to approach art, too!"))
 
 
 #|

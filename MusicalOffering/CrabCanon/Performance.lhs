@@ -24,6 +24,31 @@ Using what we already know, plus the true power of pattern matching:
 >                                 note d (trans 4 root) :=:
 >                                 note d (trans 7 root)
 
+Some higher order functions
+
+> mystery1 :: [ Music a ] -> Music a
+> mystery1 ns = foldl1 (:+:) ns
+> mystery2 :: [ Music a ] -> Music a
+> mystery2 ms = line $ map (transpose 12) ms
+
+play $ mystery1 [d 4 qn, fs 4 qn, as 4 qn]
+play $ line $ mystery2 [d 4 qn, fs 4 qn]
+
+Partial lazyness:
+
+> forever' :: Music x -> [ Music x ]
+> forever' m = m : forever' m
+> foreverSilence :: Dur -> [ Music x ]
+> foreverSilence dur = forever' $ rest dur
+> foreverA o dur = forever' $ a o dur
+> foreverA4qn = foreverA 4 qn
+
+line $ take 2 foreverA440
+Prim (Note (1 % 4) (A,4)) :+: (Prim (Note (1 % 4) (A,4)) :+: Prim (Rest (0 % 1)))
+
+
+take 2 hnSilences
+
 General fns: notice that `reductions` is my version of `scanl` as used above,
 and `take` and `repeat` are in the standard prelude:
 
