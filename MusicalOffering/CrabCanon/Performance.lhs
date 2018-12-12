@@ -31,6 +31,16 @@ Using what we already know, plus the true power of pattern matching:
 >   note d (trans 4 root) :=:
 >   note d (trans 7 root) :=:
 >   note d (pc, o+1)
+>
+> mkScale :: Music Pitch -> [Int] -> Music Pitch
+> mkScale (Prim (Note d p)) ints = line $
+>                                  map (note qn . pitch) $
+>                                  scanl (+) (absPitch p) ints
+
+Where:
+https://github.com/Euterpea/Euterpea/blob/6635e483cf80ec8ae67613c40e8d61e475f4742d/Euterpea/Music/Note/Music.hs#L134
+
+scanl (+) 4 [2,1,2]
 
 Some higher order functions
 
@@ -100,6 +110,7 @@ play $ twinkle :=: ((times 2 (rest hn)) :+: twinkle)
 >                           g 4 qn, e 4 qn, g 4 hn]
 
 
+play $ canon' (2, hn) shortFrereJacques
 
 
 Now for the actual performance, Bach's crab canon:

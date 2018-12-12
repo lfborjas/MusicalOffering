@@ -25,7 +25,7 @@ $ slideshow talk.rkt
     (define color (cond [(or (match #px"^[[:upper:]][^[:space:]]*")
                              (match #px":[^[:alpha:][:digit:]]:"))     "SteelBlue"] ;; types and type constructors
                         [(match #rx"--.*")                             "ForestGreen"] ;; comments
-                        [(match #rx"^(let|in|case|where|of|data|type)") "Orange"] ;; keywords
+                        [(match #rx"^(let|in|case|where|of|data|type)$") "Orange"] ;; keywords
                         [(match #px"[[:alpha:][:digit:]]")             "DimGray"] ;; alphanumeric and common functions
                         [(match #px"[^[:alpha:]]")                     "DarkGoldenrod"] ;; other symbols
                         [else #f]))
@@ -198,9 +198,6 @@ $ slideshow talk.rkt
  (para "Noticed the" (tt "$") "syntactic sugar?")
  (para (haskell "line (map (transpose 12) ms)")))
 
-(slide
- #:title "Example: scales")
-
 
 (slide
  #:title "Haskell: Curry"
@@ -213,6 +210,25 @@ $ slideshow talk.rkt
  (t "Which comes in handy:")
  (para (haskell "line  = foldr1 (:+:)"
                 "chord = foldr1 (:=:)")))
+
+(slide
+ #:title "Example: scales"
+ (t "How would we build a scale?")
+ 'alts
+ (list (list (t "What we want:")
+             (para (haskell "mkScale (c 4 qn) [2,2,3,2]"
+                            "--C, D, E, G, A")))
+       (list (t "In English:")
+             (item "Take a list of intervals")
+             (item "Get each abs pitch relative to the root")
+             (item "Turn those abs pitches into notes")
+             (item "Turn those notes into a line"))
+       (list (t "In Haskell:")
+             (para (haskell "mkScale :: Music Pitch -> [Int] -> Music Pitch"
+                            "mkScale (Prim (Note d p)) ints ="
+                            "  line $ "
+                            "  map (note qn . pitch) $"
+                            "  scanl (+) (absPitch p) ints")))))
 
 (slide
  #:title "Haskell is lazy"
@@ -236,9 +252,9 @@ $ slideshow talk.rkt
         (para (haskell "pcToQn :: PitchClass -> Music Pitch"
                       "pcToQn pc = note qn (pc, 4)"))
         (para (haskell "twinkle ="
-                      "  let m1 = line (map pcToQn [C, C, G, G, A, A]) :+: g 4 hn"
-                      "      m2 = line (map pcToQn [F, F, E, E, D, D]) :+: c 4 hn"
-                      "      m3 = line (map pcToQn [G, G, F, F, E, E]) :+: d 4 hn"
+                      "  let m1 = line (map pcToQn [C,C,G,G,A,A]) :+: g 4 hn"
+                      "      m2 = line (map pcToQn [F,F,E,E,D,D]) :+: c 4 hn"
+                      "      m3 = line (map pcToQn [G,G,F,F,E,E]) :+: d 4 hn"
                       "  in line [m1, m2, m3, m3, m1, m2]")))))
 
 (slide
