@@ -121,11 +121,57 @@ First, a helper function to transcribe and perform
 
 > addDur :: Dur -> [Dur -> Music a] -> Music a
 > addDur d ns = line [ n d | n <- ns]
+> stacatto :: Dur -> [Dur -> Music a] -> Music a
+> stacatto d ns = line [ n (d/8) :+: rest (1 - d/8) | n <- ns]
 
-Next, the actual line (all d, c and fs should be 
+had an error before:
+stacatto d n = n (d/8) 
+Performance.lhs:125:18-24: error: …
+    • Couldn't match expected type ‘Dur -> Music a’
+                  with actual type ‘[Dur -> Music a]’
+    • The function ‘n’ is applied to one argument,
+      but its type ‘[Dur -> Music a]’ has none
+      In the expression: n (d / 8)
+      In an equation for ‘stacatto’: stacatto d n = n (d / 8)
+    • Relevant bindings include
+        n :: [Dur -> Music a]
+          (bound at /Users/luis.borjas/birchbox/a_musical_offering/MusicalOffering/CrabCanon/Performance.lhs:125:14)
+        stacatto :: Dur -> [Dur -> Music a] -> Music a
+          (bound at /Users/luis.borjas/birchbox/a_musical_offering/MusicalOffering/CrabCanon/Performance.lhs:125:3)
+    |
+Compilation failed.
+
+
+play $ tempo (2) crabTheme
 
 > crabTheme :: Music Pitch
-> crabTheme = addDur hn []
-
+> crabTheme = addDur hn [c 4, ef 4, g 4, af 4, b 3] :+: -- bars 1-3.5
+>             qnr :+:
+>             g  4 (qn + qn) :+: fs 4 hn :+:
+>             f  4 (qn + qn) :+: e  4 hn :+:
+>             ef 4 (qn + qn) :+: d  4 qn :+:
+>             df 4 qn :+: c 4 qn :+: b 3 qn :+:
+>             g  3 qn :+: c 4 qn :+: f 4 qn :+:
+>             ef 4 hn :+: d 4 hn :+: c 4 hn :+:
+>             ef 4 hn :+:
+>             addDur en [g  4, f  4, g 4, c 5,
+>                        g  4, ef 4, d 4, ef 4,
+>                        f  4, g 4, a 4, b 4,
+>                        c  5, ef 4, f 4, g 4,
+>                        af 4, d 4, ef 4, f 4,
+>                        g  4, f 4, ef 4, d 4,
+>                        ef 4, f 4, g 4, af 4,
+>                        bf 4, af 4, g 4, f 4,
+>                        g  4, a 4, bf 4, c 5,
+>                        df 5, bf 4, af 4, g 4,
+>                        a  4, b 4, c 5, d 5,
+>                        ef 5, c 5, bf 4, a 4,
+>                        b  4, c 5, d 5, ef 5,
+>                        f  5, d 5, g 4, d 5,
+>                        c  5, d 5, ef 5, f 5,
+>                        ef 5, d 5, c 5, b 4] :+:
+>             stacatto qn [c 5, g 4, ef 4] :+:
+>             c 4 qn
+ 
 
 
