@@ -231,7 +231,7 @@ $ slideshow talk.rkt
                             "  scanl (+) (absPitch p) ints")))
        (list (t "Which we can use to define stuff:")
              (para (haskell "pentatonic = mkScale [2,2,3,2]"
-                            "pentatonic $ c 4 qn")))))
+                            "pentatonic $ fs 4 qn")))))
 
 (slide
  #:title "Haskell is lazy"
