@@ -114,8 +114,18 @@ play $ canon' (2, hn) shortFrereJacques
 
 
 Now for the actual performance, Bach's crab canon:
+There's also page 5 of this: https://people.smp.uq.edu.au/PhilipPollett/talks/UQ2006/talk.pdf
+in addition to the score we have elsewhere
 
+First, a helper function to transcribe and perform
 
+> addDur :: Dur -> [Dur -> Music a] -> Music a
+> addDur d ns = line [ n d | n <- ns]
+
+Next, the actual line (all d, c and fs should be 
+
+> crabTheme :: Music Pitch
+> crabTheme = addDur hn []
 
 
 

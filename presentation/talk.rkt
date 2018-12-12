@@ -291,6 +291,7 @@ $ slideshow talk.rkt
 (slide
  #:title "A cooler puzzle"
  (t "Bach's 'Crab Canon'")
+ (tt "Canon 1 a 2")
  (bitmap "canon_cancrizans.png"))
 
 (slide
