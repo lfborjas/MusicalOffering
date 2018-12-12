@@ -153,13 +153,28 @@ $ slideshow talk.rkt
                  "chord :: [ Music a ] -> Music a"
                  "chord [c 4 qn, e 4 qn, g 4 qn, c 5 qn]"))
 
-  (t "A fancier type of pattern matching")
-  (para (haskell "majChord :: Music Pitch -> Music Pitch"
-                 "majChord (Prim (Note d root)) = "
-                 "  note d root :=:"
-                 "  note d (trans 4 root) :=:"
-                 "  note d (trans 7 root)"
-                 "majChord _ = error 'only works for notes!'")))
+
+)
+
+(slide
+ #:title "Pattern matching, TNG"
+ (t "A fancier type of pattern matching")
+ 'alts
+ (list (list 
+        (para (haskell "majChord :: Music Pitch -> Music Pitch"
+                       "majChord (Prim (Note d root)) = "
+                       "  note d root :=:"
+                       "  note d (trans 4 root) :=:"
+                       "  note d (trans 7 root)"
+                       "majChord _ = error 'only works for notes!'")))
+       (list
+        (para (haskell "majChord :: Music Pitch -> Music Pitch"
+                       "majChord (Prim (Note d r@(pc, oct))) = "
+                       "  note d r :=:"
+                       "  note d (trans 4 r) :=:"
+                       "  note d (trans 7 r) :=:"
+                       "  note d (pc, o+1))"
+                       "majChord _ = error 'only works for notes!'")))))
 
 (slide
  #:title "Transcending"
@@ -182,6 +197,9 @@ $ slideshow talk.rkt
  'next
  (para "Noticed the" (tt "$") "syntactic sugar?")
  (para (haskell "line (map (transpose 12) ms)")))
+
+(slide
+ #:title "Example: scales")
 
 
 (slide
@@ -247,9 +265,12 @@ $ slideshow talk.rkt
                 "play $ canon' (2, qn) twinkle"
                 "play $ canon' (2, en) twinkle")))
 
+#;
 (slide
  #:title "More complex puzzles!"
- (t "Bach's 'Crab Canon'"))
+ (t "Bach's 'Crab Canon'")
+ (scale-to-fit
+  (bitmap "crabcanon.png")))
 
 (slide
  #:title "Takeaways"
