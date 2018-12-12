@@ -24,6 +24,13 @@ Using what we already know, plus the true power of pattern matching:
 >                                 note d (trans 4 root) :=:
 >                                 note d (trans 7 root)
 > majChord _ = error "Only works for notes!"
+>
+> majChord' :: Music Pitch -> Music Pitch
+> majChord' (Prim (Note d root@(pc, o))) =
+>   note d root :=:
+>   note d (trans 4 root) :=:
+>   note d (trans 7 root) :=:
+>   note d (pc, o+1)
 
 Some higher order functions
 
@@ -94,32 +101,10 @@ play $ twinkle :=: ((times 2 (rest hn)) :+: twinkle)
 
 
 
-General fns: notice that `reductions` is my version of `scanl` as used above,
-and `take` and `repeat` are in the standard prelude:
 
-> reductions :: (b -> a -> b) -> b -> [a] -> [b]
-> reductions f init [] = init : [] -- turn a single value into a list
-> reductions f init (x:xs) = init : (reductions f (f init x) xs)
-> repeat' :: Num b => Ord b => a -> b -> [a]
-> repeat' a times  = let r y 0 ys = ys
->                        r y n ys = r y (n-1) (y:ys)
->                    in r a times []
-> repeatedly :: Int -> a -> [a]
-> repeatedly n x = take n (repeat x)
-> each :: (a -> b) -> [a] -> [b]
-> each f [] = []
-> each f (x:xs) = (f x):(each f xs)
-> range :: Num a => Enum a => Int -> [a]
-> range n = take n [0..]
+Now for the actual performance, Bach's crab canon:
 
-> delay :: Music a -> Dur -> Int -> Music a
-> delay mel delayVal delayTimes = let rests dv dt = line (repeatedly dt (rest dv))
->                                 in (rests delayVal delayTimes) :+: mel
-> canon'' :: Music a -> Int -> [InstrumentName] -> Music a
-> canon'' mel nVoices instruments =
->   let chooseInstrument n = instruments !! (n `mod` (length instruments))
->       voice m dur n = instrument (chooseInstrument n) (delay m dur n)
->   in foldl1 (:=:) (each (voice mel hn) (range (nVoices - 1)))
->
 
-;; https://www.youtube.com/watch?v=36ykl2tJwZM
+
+
+
