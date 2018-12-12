@@ -32,8 +32,8 @@ Using what we already know, plus the true power of pattern matching:
 >   note d (trans 7 root) :=:
 >   note d (pc, o+1)
 >
-> mkScale :: Music Pitch -> [Int] -> Music Pitch
-> mkScale (Prim (Note d p)) ints = line $
+> mkScale :: [Int] -> Music Pitch -> Music Pitch
+> mkScale ints (Prim (Note d p)) = line $
 >                                  map (note qn . pitch) $
 >                                  scanl (+) (absPitch p) ints
 

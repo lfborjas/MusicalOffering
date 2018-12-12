@@ -216,7 +216,7 @@ $ slideshow talk.rkt
  (t "How would we build a scale?")
  'alts
  (list (list (t "What we want:")
-             (para (haskell "mkScale (c 4 qn) [2,2,3,2]"
+             (para (haskell "mkScale [2,2,3,2] (c 4 qn)"
                             "--C, D, E, G, A")))
        (list (t "In English:")
              (item "Take a list of intervals")
@@ -224,11 +224,14 @@ $ slideshow talk.rkt
              (item "Turn those abs pitches into notes")
              (item "Turn those notes into a line"))
        (list (t "In Haskell:")
-             (para (haskell "mkScale :: Music Pitch -> [Int] -> Music Pitch"
-                            "mkScale (Prim (Note d p)) ints ="
+             (para (haskell "mkScale :: [Int] -> Music Pitch -> Music Pitch"
+                            "mkScale ints (Prim (Note d p)) ="
                             "  line $ "
                             "  map (note qn . pitch) $"
-                            "  scanl (+) (absPitch p) ints")))))
+                            "  scanl (+) (absPitch p) ints")))
+       (list (t "Which we can use to define stuff:")
+             (para (haskell "pentatonic = mkScale [2,2,3,2]"
+                            "pentatonic $ c 4 qn")))))
 
 (slide
  #:title "Haskell is lazy"
