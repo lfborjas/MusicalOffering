@@ -17,15 +17,15 @@ play qnA'
 > cMaj   = c 4 qn :=: e 4 qn :=: g 4 qn
 
 
-When "reading" a score or composing new music, we can try to find patterns and express them with functions. A naïve
-approach to the crab canon theme is to just transcribe the notes:
+Using what we already know, plus the true power of pattern matching:
 
-> mel :: Music Pitch
-> mel = line [c 4 en, d 4 en, e 4 en, f 4 en]
+> majChord :: Music Pitch -> Music Pitch
+> majChord (Prim (Note d root)) = note d root :=:
+>                                 note d (trans 4 root) :=:
+>                                 note d (trans 7 root)
 
 General fns: notice that `reductions` is my version of `scanl` as used above,
 and `take` and `repeat` are in the standard prelude:
-
 
 > reductions :: (b -> a -> b) -> b -> [a] -> [b]
 > reductions f init [] = init : [] -- turn a single value into a list
@@ -45,8 +45,6 @@ and `take` and `repeat` are in the standard prelude:
 > delay :: Music a -> Dur -> Int -> Music a
 > delay mel delayVal delayTimes = let rests dv dt = line (repeatedly dt (rest dv))
 >                                 in (rests delayVal delayTimes) :+: mel
-> voices :: Music a -> Int -> Music a
-> voices mel nVoices = foldl1 (:=:) (each (delay mel hn) (range (nVoices - 1)))
 > canon :: Music a -> Int -> [InstrumentName] -> Music a
 > canon mel nVoices instruments =
 >   let chooseInstrument n = instruments !! (n `mod` (length instruments))

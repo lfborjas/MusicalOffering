@@ -22,12 +22,12 @@ $ slideshow talk.rkt
 (define (haskell . lines)
   (define (syntax-color token)
     (define match (λ (p) (regexp-match p token)))
-    (define color (cond [(or (match #px"^[[:upper:]][^[:space:]]")
-                             (match #px":[^[:alpha:][:digit:]]:")) "SteelBlue"] ;; types and type constructors
-                        [(match #rx"--.*")                        "ForestGreen"] ;; comments
-                        [(match #rx"(let|in|case|where|of)")      "Orange"] ;; keywords
-                        [(match #px"[[:alpha:][:digit:]]")        "DimGray"] ;; alphanumeric and common functions
-                        [(match #px"[^[:alpha:]]")                "DarkGoldenrod"] ;; other symbols
+    (define color (cond [(or (match #px"^[[:upper:]][^[:space:]]*")
+                             (match #px":[^[:alpha:][:digit:]]:"))     "SteelBlue"] ;; types and type constructors
+                        [(match #rx"--.*")                             "ForestGreen"] ;; comments
+                        [(match #rx"(let|in|case|where|of|data|type)") "Orange"] ;; keywords
+                        [(match #px"[[:alpha:][:digit:]]")             "DimGray"] ;; alphanumeric and common functions
+                        [(match #px"[^[:alpha:]]")                     "DarkGoldenrod"] ;; other symbols
                         [else #f]))
     (if color
         (colorize (tt token) color)
@@ -79,25 +79,96 @@ $ slideshow talk.rkt
  'next
  (para (haskell "doReMi = c 4 qn :+: d 4 qn :+: e 4 qn"
                 "cMaj   = c 4 qn :=: e 4 qn :=: g 4 qn"
+                "(:+:) (c 4 qn) (e 4 qn)"
                 "play doReMi"
                 "play cMaj"
                 "play (doReMi :+: cMaj)")))
 
 
 (slide
- #:title "A soupcon of Types")
+ #:title "A soupcon of Types"
+
+ ; type synonyms
+ (para (haskell "type Octave = Int"
+                "type Pitch  = ( PitchClass, Octave )"
+                "type Dur    = Rational"
+                ;; algebraic data type: constructors on the right
+                "data PitchClass = Cff | Cf | C | Dff | Cs | Df | Css | D --..."))
+
+ 'next
+ (t "Haskell infers types, but we can tell it:")
+ ; type annotations, though haskell mostly infers:
+ (para (haskell "qn :: Dur"
+                "qn = 1/4"
+                "(A, 4) :: Pitch"
+                "simple :: Int -> Int -> Int"
+                "add2 :: [ Int ] -> [ Int ]"
+                "note :: Dur -> Pitch -> Music Pitch")))
 
 (slide
- #:title "Functions of all orders")
+ #:title "Polymorphic types (!)"
+
+ (para (haskell "data Primitive = Note Dur Pitch"
+                "               | Rest Dur"))
+
+ 'next
+ (t "We can think about these constructors as functions:")
+ (para (haskell "Note :: Dur -> Pitch -> Primitive"
+                "Rest :: Dur -> Primitive"
+                "Note (1/4) (A, 4)"))
+ 
+ 'next
+ (t "Okay definition... but notes are more than pitches (percussion, volume, etc.)")
+
+ 'next
+ ; what about other information about notes? (what if it has no pitch
+ ; or if we want to also know about its volume or dynamics?)
+ ; a is a type variable
+ (para (haskell "data Primitive a = Note Dur a"
+                "                 | Rest Dur"))
+ (t "Which looks like:")
+ (para (haskell "Note :: Dur -> a -> Primitive a"
+                "Rest :: Primitive a")))
 
 (slide
- #:title "Curry in a hurry"
- ; add both currying and the $ and . operators?
+ #:title "A fancier (recursive!) type"
+ (para (haskell "data Music a = Prim ( Primitive a )"
+                "             | Music a :+: Music a"
+                "             | Music a :=: Music a"))
+ 'next
+ (para (haskell "Prim  :: Primitive a -> Music a"
+                "(:+:) :: Music a -> Music a -> Music a"
+                "(:=:) :: Music a -> Music a -> Music a")))
+
+(slide
+ #:title "Reasoning with types"
+  (para (haskell "line :: [ Music a ] -> Music a"
+                "line [] = rest 0"
+                "line (m:ms) = m :+: line ms"
+                "line [c 4 qn, e 4 qn, g 4 qn, c 5 qn]"
+                "chord :: [ Music a ] -> Music a"
+                "chord [c 4 qn, e 4 qn, g 4 qn, c 5 qn]"))
+
+  (t "A fancier type of pattern matching")
+  (para (haskell "majChord :: Music Pitch -> Music Pitch"
+                 "majChord (Prim (Note d root)) = "
+                 "  note d root :=:"
+                 "  note d (trans 4 root) :=:"
+                 "  note d (trans 7 root)")))
+
+(slide
+ #:title "A higher order"
+ ; mention things like map and foldl/scanl, plus currying and composition?
+ ; what about `$`
  )
 
-(slide
- #:title "To infinity, and beyond")
 
+(slide
+ #:title "To infinity, and beyond"
+ ; infinite sequences, list comprehensions
+ )
+
+#;
 (slide
  #:title "So you want to write a canon?"
  'alts ;; iterative approach
