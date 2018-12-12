@@ -288,12 +288,10 @@ $ slideshow talk.rkt
                 "play $ canon (2, qn) twinkle"
                 "play $ canon (2, en) twinkle")))
 
-#;
 (slide
- #:title "More complex puzzles!"
+ #:title "A cooler puzzle"
  (t "Bach's 'Crab Canon'")
- (scale-to-fit
-  (bitmap "crabcanon.png")))
+ (bitmap "canon_cancrizans.png"))
 
 (slide
  #:title "Takeaways"
