@@ -216,8 +216,10 @@ $ slideshow talk.rkt
  (t "How would we build a scale?")
  'alts
  (list (list (t "What we want:")
-             (para (haskell "mkScale [2,2,3,2] (c 4 qn)"
-                            "--C, D, E, G, A")))
+             (para (haskell "mkScale [2,2,3,2] (fs 4 qn)"
+                            "--Fs, Gs, As, Cs, Ds")))
+       (list (t "In Music:")
+             (bitmap "black_keys.png"))
        (list (t "In English:")
              (item "Take a list of intervals")
              (item "Get each abs pitch relative to the root")
@@ -250,10 +252,12 @@ $ slideshow talk.rkt
  (t "Remember this tune?")
  'alts
  (list (list 
-        (t "twinkle little star score goes here"))
+        (bitmap "twinkle.png"))
+       (list
+        (bitmap "twinkle_annotated.png"))
        (list
         (para (haskell "pcToQn :: PitchClass -> Music Pitch"
-                      "pcToQn pc = note qn (pc, 4)"))
+                       "pcToQn pc = note qn (pc, 4)"))
         (para (haskell "twinkle ="
                       "  let m1 = line (map pcToQn [C,C,G,G,A,A]) :+: g 4 hn"
                       "      m2 = line (map pcToQn [F,F,E,E,D,D]) :+: c 4 hn"
@@ -271,8 +275,8 @@ $ slideshow talk.rkt
 
 (slide
  (t "A function for creating canons:")
- (para (haskell "canon' :: (Int, Dur) -> Music a -> Music a"
-                "canon' (voices, delay) mel ="
+ (para (haskell "canon :: (Int, Dur) -> Music a -> Music a"
+                "canon (voices, delay) mel ="
                 "  let range n = take n [0..]"
                 "      wait d m n = times n (rest dur) :+: m"
                 "  in chord $ map"
@@ -280,9 +284,9 @@ $ slideshow talk.rkt
                 ""))
 
  (t "With some interesting results: ")
- (para (haskell "play $ canon' (2, hn) twinkle"
-                "play $ canon' (2, qn) twinkle"
-                "play $ canon' (2, en) twinkle")))
+ (para (haskell "play $ canon (2, hn) twinkle"
+                "play $ canon (2, qn) twinkle"
+                "play $ canon (2, en) twinkle")))
 
 #;
 (slide

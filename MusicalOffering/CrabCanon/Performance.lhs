@@ -86,16 +86,16 @@ Let's throw a couple of these together:
 play $ twinkle :=: ((times 2 (rest hn)) :+: twinkle)
 
 
-> canon :: (Int, Dur) -> [InstrumentName] -> Music a -> Music a
-> canon (voices, delay) instruments mel =
+> canon' :: (Int, Dur) -> [InstrumentName] -> Music a -> Music a
+> canon' (voices, delay) instruments mel =
 >   let range  n = take n [0..]
 >       instr  n = instruments !! (n `mod` length instruments)
 >       offset dur m n = times n (rest dur) :+: m
 >       voice dur m n = instrument (instr n) (offset dur m n)
 >   in chord $ map (voice delay mel) (range voices)
 >
-> canon' :: (Int, Dur) -> Music a -> Music a
-> canon' (voices, delay) mel =
+> canon :: (Int, Dur) -> Music a -> Music a
+> canon (voices, delay) mel =
 >   let range n = take n [0..]
 >       offset dur m n = times n
 >                        (rest dur) :+: m
