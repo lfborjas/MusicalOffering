@@ -70,8 +70,8 @@ $ slideshow talk.rkt
  #:title "A taste of Euterpea"
 
  (t "What's a note?")
- (para (haskell "concertA = (A, 4)"
-                "quarterNote = 1/4"
+ (para (haskell "concertA = (A, 4) --Tuple"
+                "quarterNote = 1/4 --Rational"
                 "qnA = note quarterNote concertA"))
 
  'next
@@ -82,7 +82,6 @@ $ slideshow talk.rkt
  (t "What are notes good for?")
  (para (haskell "doReMi = c 4 qn :+: d 4 qn :+: e 4 qn"
                 "cMaj   = c 4 qn :=: e 4 qn :=: g 4 qn"
-                "(:+:) (c 4 qn) (e 4 qn)"
                 "play doReMi"
                 "play cMaj"
                 "play (doReMi :+: cMaj)")))
@@ -105,9 +104,9 @@ $ slideshow talk.rkt
  (para (haskell "qn :: Dur"
                 "qn = 1/4"
                 "(A, 4) :: Pitch"
-                "simple :: Int -> Int -> Int"
                 "add2 :: [ Int ] -> [ Int ]"
-                "note :: Dur -> Pitch -> Music Pitch")))
+                "note :: Dur -> Pitch -> Music Pitch"
+                "a,b,c,d,e,f,g :: Octave -> Dur -> Music Pitch")))
 
 (slide
  #:title "A Type of Music"
@@ -209,22 +208,44 @@ $ slideshow talk.rkt
  (t "No explosions, until...")
  (para (haskell "play $ line $ take 2 foreverA4qn")))
 
-#;
-(slide
- #:title "So you want to write a canon?"
- 'alts ;; iterative approach
- (list (list )))
-
 (slide
  #:title "Let's use our knowledge for music!"
- (t "Let's talk about canons:")
- ; frere jacques photo here
- )
+ (t "Remember this tune?")
+ 'alts
+ (list (list 
+        (t "twinkle little star score goes here"))
+       (list
+        (para (haskell "pcToQn :: PitchClass -> Music Pitch"
+                      "pcToQn pc = note qn (pc, 4)"))
+        (para (haskell "twinkle ="
+                      "  let m1 = line (map pcToQn [C, C, G, G, A, A]) :+: g 4 hn"
+                      "      m2 = line (map pcToQn [F, F, E, E, D, D]) :+: c 4 hn"
+                      "      m3 = line (map pcToQn [G, G, F, F, E, E]) :+: d 4 hn"
+                      "  in line [m1, m2, m3, m3, m1, m2]")))))
 
 (slide
- #:title "Dormez vous?"
- ; incremental solution to the canon thingy
- )
+ #:title "Playing with music"
+ (para (haskell "times 0 m = rest 0; times n m = m :+: times (n - 1) m"
+                "play $ twinkle :=: ((times 2 (rest hn)) :+: twinkle)"))
+
+ (t "What if we want to generalize it?")
+ (para (haskell "canon :: (Int, Dur) -> Music a -> Music a"
+                "canon (2, hn) twinkle")))
+
+(slide
+ (t "A function for creating canons:")
+ (para (haskell "canon' :: (Int, Dur) -> Music a -> Music a"
+                "canon' (voices, delay) mel ="
+                "  let range n = take n [0..]"
+                "      wait d m n = times n (rest dur) :+: m"
+                "  in chord $ map"
+                "      (wait delay mel) (range voices)"
+                ""))
+
+ (t "With some interesting results: ")
+ (para (haskell "play $ canon' (2, hn) twinkle"
+                "play $ canon' (2, qn) twinkle"
+                "play $ canon' (2, en) twinkle")))
 
 (slide
  #:title "More complex puzzles!"
@@ -239,6 +260,9 @@ $ slideshow talk.rkt
 
 #|
 Outline:
+https://www.youtube.com/watch?v=36ykl2tJwZM
+https://www.youtube.com/watch?v=xUHQ2ybTejU
+
 * A tour of haskell basics
 ** Function application
 ** Basic syntax (precedence)

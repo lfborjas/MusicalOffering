@@ -23,6 +23,7 @@ Using what we already know, plus the true power of pattern matching:
 > majChord (Prim (Note d root)) = note d root :=:
 >                                 note d (trans 4 root) :=:
 >                                 note d (trans 7 root)
+> majChord _ = error "Only works for notes!"
 
 Some higher order functions
 
@@ -32,7 +33,8 @@ Some higher order functions
 > mystery2 ms = line $ map (transpose 12) ms
 
 play $ mystery1 [d 4 qn, fs 4 qn, as 4 qn]
-play $ line $ mystery2 [d 4 qn, fs 4 qn]
+play $ mystery1 [d 4 qn, fs 4 qn] :+: mystery2 [d 4 qn, fs 4 qn]
+
 
 Partial lazyness:
 
@@ -48,6 +50,49 @@ Prim (Note (1 % 4) (A,4)) :+: (Prim (Note (1 % 4) (A,4)) :+: Prim (Rest (0 % 1))
 
 
 take 2 hnSilences
+
+Remember this tune?
+
+> pcToQn :: PitchClass -> Music Pitch
+> pcToQn pc = note qn (pc, 4)
+
+With this, we reduce the melody to combine and reduce repetition:
+
+> twinkle =
+>   let m1 = line (map pcToQn [C, C, G, G, A, A]) :+: g 4 hn
+>       m2 = line (map pcToQn [F, F, E, E, D, D]) :+: c 4 hn
+>       m3 = line (map pcToQn [G, G, F, F, E, E]) :+: d 4 hn
+>   in line [m1, m2, m3, m3, m1, m2]
+
+Let's throw a couple of these together:
+
+play $ twinkle :=: ((times 2 (rest hn)) :+: twinkle)
+
+
+> canon :: (Int, Dur) -> [InstrumentName] -> Music a -> Music a
+> canon (voices, delay) instruments mel =
+>   let range  n = take n [0..]
+>       instr  n = instruments !! (n `mod` length instruments)
+>       offset dur m n = times n (rest dur) :+: m
+>       voice dur m n = instrument (instr n) (offset dur m n)
+>   in chord $ map (voice delay mel) (range voices)
+>
+> canon' :: (Int, Dur) -> Music a -> Music a
+> canon' (voices, delay) mel =
+>   let range n = take n [0..]
+>       offset dur m n = times n
+>                        (rest dur) :+: m
+>   in chord $ map
+>      (offset delay mel)
+>      (range voices)
+
+> shortFrereJacques :: Music Pitch
+> shortFrereJacques = line [g 4 qn, a 4 qn, b 4 qn, g 4 qn,
+>                           b 4 qn, c 5 qn, d 5 hn,
+>                           d 5 den, e 5 sn, d 5 en, c 5 en, b 4 qn, g 4 qn,
+>                           g 4 qn, e 4 qn, g 4 hn]
+
+
 
 General fns: notice that `reductions` is my version of `scanl` as used above,
 and `take` and `repeat` are in the standard prelude:
@@ -70,14 +115,11 @@ and `take` and `repeat` are in the standard prelude:
 > delay :: Music a -> Dur -> Int -> Music a
 > delay mel delayVal delayTimes = let rests dv dt = line (repeatedly dt (rest dv))
 >                                 in (rests delayVal delayTimes) :+: mel
-> canon :: Music a -> Int -> [InstrumentName] -> Music a
-> canon mel nVoices instruments =
+> canon'' :: Music a -> Int -> [InstrumentName] -> Music a
+> canon'' mel nVoices instruments =
 >   let chooseInstrument n = instruments !! (n `mod` (length instruments))
 >       voice m dur n = instrument (chooseInstrument n) (delay m dur n)
 >   in foldl1 (:=:) (each (voice mel hn) (range (nVoices - 1)))
+>
 
-> shortFrereJacques :: Music Pitch
-> shortFrereJacques = line [g 4 qn, a 4 qn, b 4 qn, g 4 qn,
->                           b 4 qn, c 5 qn, d 5 hn,
->                           d 5 den, e 5 sn, d 5 en, c 5 en, b 4 qn, g 4 qn,
->                           g 4 qn, e 4 qn, g 4 hn]
+;; https://www.youtube.com/watch?v=36ykl2tJwZM
