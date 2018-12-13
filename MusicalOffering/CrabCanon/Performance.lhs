@@ -150,14 +150,14 @@ First, a helper function to transcribe and perform
 > retrograde = line . reverse . lineToList'
 
 had an error before:
-stacatto d n = n (d/8) 
+staccato d n = n (d/8) 
 Performance.lhs:125:18-24: error: …
     • Couldn't match expected type ‘Dur -> Music a’
                   with actual type ‘[Dur -> Music a]’
     • The function ‘n’ is applied to one argument,
       but its type ‘[Dur -> Music a]’ has none
       In the expression: n (d / 8)
-      In an equation for ‘stacatto’: stacatto d n = n (d / 8)
+      In an equation for ‘staccato’: staccato d n = n (d / 8)
     • Relevant bindings include
         n :: [Dur -> Music a]
           (bound at /Users/luis.borjas/birchbox/a_musical_offering/MusicalOffering/CrabCanon/Performance.lhs:125:14)
@@ -170,7 +170,7 @@ Compilation failed.
 play $ tempo (2) crabTheme
 
 > crabTheme :: Music Pitch
-> crabTheme = addDur hn [c 4, ef 4, g 4, af 4, b 3] :+: -- bars 1-3.5
+> crabTheme = rest 0 :+: addDur hn [c 4, ef 4, g 4, af 4, b 3] :+: -- bars 1-3.5
 >             qnr :+:
 >             g  4 (qn + qn) :+: fs 4 hn :+:
 >             f  4 (qn + qn) :+: e  4 hn :+:
@@ -199,6 +199,12 @@ play $ tempo (2) crabTheme
 >             c 4 qn :+: rest 0
  
 now we can play it:
+
+> crabCanon :: Music Pitch
+> crabCanon =
+>   instrument Harpsichord $
+>   crabTheme :=:
+>   retrograde crabTheme
 
 play $ tempo (2) crabTheme
 play $ (instrument Harpsichord crabTheme) :=: (instrument Harpsichord (retrograde $ crabTheme))
