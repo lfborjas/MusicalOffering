@@ -136,12 +136,7 @@ in addition to the score we have elsewhere
 
 First, a helper function to transcribe and perform
 
-> addDur :: Dur -> [Dur -> Music a] -> Music a
-> addDur d ns = line [ n d | n <- ns]
-> staccato :: Dur -> (Dur -> Music a) -> Music a
-> staccato d n = n (d/8) :+: rest (7*d/8)
-> staccatoAll :: Dur -> [Dur -> Music a] -> Music a
-> staccatoAll d ns = line $ map (staccato d) ns
+
 > lineToList' :: Music a -> [Music a]
 > lineToList' (Prim (Rest 0)) = []
 > lineToList' (n :+: ns) = n : lineToList' ns
@@ -161,7 +156,7 @@ Performance.lhs:125:18-24: error: …
     • Relevant bindings include
         n :: [Dur -> Music a]
           (bound at /Users/luis.borjas/birchbox/a_musical_offering/MusicalOffering/CrabCanon/Performance.lhs:125:14)
-        stacatto :: Dur -> [Dur -> Music a] -> Music a
+        staccato :: Dur -> [Dur -> Music a] -> Music a
           (bound at /Users/luis.borjas/birchbox/a_musical_offering/MusicalOffering/CrabCanon/Performance.lhs:125:3)
     |
 Compilation failed.
@@ -170,33 +165,35 @@ Compilation failed.
 play $ tempo (2) crabTheme
 
 > crabTheme :: Music Pitch
-> crabTheme = rest 0 :+: addDur hn [c 4, ef 4, g 4, af 4, b 3] :+: -- bars 1-3.5
->             qnr :+:
->             g  4 (qn + qn) :+: fs 4 hn :+:
->             f  4 (qn + qn) :+: e  4 hn :+:
->             ef 4 (qn + qn) :+: d  4 qn :+:
->             df 4 qn :+: c 4 qn :+: b 3 qn :+:
->             g  3 qn :+: c 4 qn :+: f 4 qn :+:
->             ef 4 hn :+: d 4 hn :+: c 4 hn :+:
->             ef 4 hn :+:
->             addDur en [g  4, f  4, g 4, c 5,
->                        g  4, ef 4, d 4, ef 4,
->                        f  4, g 4, a 4, b 4,
->                        c  5, ef 4, f 4, g 4,
->                        af 4, d 4, ef 4, f 4,
->                        g  4, f 4, ef 4, d 4,
->                        ef 4, f 4, g 4, af 4,
->                        bf 4, af 4, g 4, f 4,
->                        g  4, a 4, bf 4, c 5,
->                        df 5, bf 4, af 4, g 4,
->                        a  4, b 4, c 5, d 5,
->                        ef 5, c 5, bf 4, a 4,
->                        b  4, c 5, d 5, ef 5,
->                        f  5, d 5, g 4, d 5,
->                        c  5, d 5, ef 5, f 5,
->                        ef 5, d 5, c 5, b 4] :+:
->             staccatoAll qn [c 5, g 4, ef 4] :+:
->             c 4 qn :+: rest 0
+> crabTheme = line $
+>             [rest 0, c 4 hn, ef 4 hn, g 4 hn, af 4 hn, b 3 hn,
+>               qnr,
+>               g  4 (qn + qn) , fs 4 hn ,
+>               f  4 (qn + qn) , e  4 hn ,
+>               ef 4 (qn + qn) , d  4 qn ,
+>               df 4 qn , c 4 qn , b 3 qn ,
+>               g  3 qn , c 4 qn , f 4 qn ,
+>               ef 4 hn , d 4 hn , c 4 hn ,
+>               ef 4 hn ,
+>               g  4 en, f  4 en, g 4 en, c 5 en,
+>               g  4 en, ef 4 en, d 4 en, ef 4 en,
+>               f  4 en, g 4 en, a 4 en, b 4 en,
+>               c  5 en, ef 4 en, f 4 en, g 4 en,
+>               af 4 en, d 4 en, ef 4 en, f 4 en,
+>               g  4 en, f 4 en, ef 4 en, d 4 en,
+>               ef 4 en, f 4 en, g 4 en, af 4 en,
+>               bf 4 en, af 4 en, g 4 en, f 4 en,
+>               g  4 en, a 4 en, bf 4 en, c 5 en,
+>               df 5 en, bf 4 en, af 4 en, g 4 en,
+>               a  4 en, b 4 en, c 5 en, d 5 en,
+>               ef 5 en, c 5 en, bf 4 en, a 4 en,
+>               b  4 en, c 5 en, d 5 en, ef 5 en,
+>               f  5 en, d 5 en, g 4 en, d 5 en,
+>               c  5 en, d 5 en, ef 5 en, f 5 en,
+>               ef 5 en, d 5 en, c 5 en, b 4 en,
+>               c 5 qn, g 4 qn,
+>               ef 4 qn,
+>               c 4 qn , rest 0]
  
 now we can play it:
 
@@ -205,7 +202,56 @@ now we can play it:
 >   instrument Harpsichord $
 >   crabTheme :=:
 >   retrograde crabTheme
+> 
+> fastCanon :: Music Pitch
+> fastCanon =
+>   instrument Harpsichord $
+>   tempo 2 $
+>   crabTheme :=:
+>   retrograde crabTheme
+>
+> fastTheme = tempo 3 crabTheme
 
 play $ tempo (2) crabTheme
 play $ (instrument Harpsichord crabTheme) :=: (instrument Harpsichord (retrograde $ crabTheme))
 
+With some fanciness:
+
+> addDur :: Dur -> [Dur -> Music a] -> Music a
+> addDur d ns = line [ n d | n <- ns]
+> staccato' :: Dur -> (Dur -> Music a) -> Music a
+> staccato' d n = n (d/8) :+: rest (7*d/8)
+> staccato :: Music a -> Music a
+> staccato (Prim (Note d p)) =
+>   note (d/8) p :+: rest (7*d/8)
+> staccatoAll :: Dur -> [Dur -> Music a] -> Music a
+> staccatoAll d ns = line $ map (staccato' d) ns
+
+> crabTheme' = rest 0 :+:
+>              addDur hn [c 4, ef 4, g 4, af 4, b 3] :+:
+>              qnr :+:
+>              g  4 (qn + qn) :+: fs 4 hn :+:
+>              f  4 (qn + qn) :+: e  4 hn :+:
+>              ef 4 (qn + qn) :+: d  4 qn :+:
+>              df 4 qn :+: c 4 qn :+: b 3 qn :+:
+>              g  3 qn :+: c 4 qn :+: f 4 qn :+:
+>              ef 4 hn :+: d 4 hn :+: c 4 hn :+:
+>              ef 4 hn :+:
+>              addDur en [g  4, f  4, g 4, c 5,
+>                         g  4, ef 4, d 4, ef 4,
+>                         f  4, g 4, a 4, b 4,
+>                         c  5, ef 4, f 4, g 4,
+>                         af 4, d 4, ef 4, f 4,
+>                         g  4, f 4, ef 4, d 4,
+>                         ef 4, f 4, g 4, af 4,
+>                         bf 4, af 4, g 4, f 4,
+>                         g  4, a 4, bf 4, c 5,
+>                         df 5, bf 4, af 4, g 4,
+>                         a  4, b 4, c 5, d 5,
+>                         ef 5, c 5, bf 4, a 4,
+>                         b  4, c 5, d 5, ef 5,
+>                         f  5, d 5, g 4, d 5,
+>                         c  5, d 5, ef 5, f 5,
+>                         ef 5, d 5, c 5, b 4] :+:
+>              staccatoAll qn [c 5, g 4, ef 4] :+:
+>              c 4 qn :+: rest 0
