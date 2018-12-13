@@ -89,10 +89,11 @@ $ slideshow talk.rkt
 (slide
  #:title "Composing music"
  ; add a couple of cool tunes
+ ; times function, beethoven, bach
  )
 
 (slide
- #:title "Types, types, types"
+ #:title "The name of the wind"
 
  ; type synonyms
  (t "Type synonyms:")

@@ -17,6 +17,12 @@ play qnA'
 > cMaj''   = c 4 qn :=: e 4 qn :=: g 4 qn
 
 
+Fancy stuff:
+
+https://imslp.org/wiki/File:Beethoven-Liszt_Symphony-5.pdf
+https://imslp.org/wiki/Toccata_and_Fugue_in_D_minor%2C_BWV_565_(Bach%2C_Johann_Sebastian)
+
+
 Using what we already know, plus the true power of pattern matching:
 
 > majChord :: Music Pitch -> Music Pitch
