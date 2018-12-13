@@ -310,6 +310,9 @@ $ slideshow talk.rkt
  (item "Programming can be a tool to approach art, too!"))
 
 (slide
+ (t "Appendix"))
+
+(slide
  #:title "Let's use our knowledge for music!"
  (t "Remember this tune?")
  'alts
