@@ -146,6 +146,9 @@ First, a helper function to transcribe and perform
 > lineToList' _ = error "Need to provide a line!"
 > retrograde :: Music Pitch -> Music Pitch
 > retrograde = line . reverse . lineToList'
+> staccato :: Music a -> Music a
+> staccato (Prim (Note d p)) =
+>   note (d/8) p :+: rest (7*d/8)
 
 had an error before:
 staccato d n = n (d/8) 
@@ -194,8 +197,8 @@ play $ tempo (2) crabTheme
 >               f  5 en, d 5 en, g 4 en, d 5 en,
 >               c  5 en, d 5 en, ef 5 en, f 5 en,
 >               ef 5 en, d 5 en, c 5 en, b 4 en,
->               c 5 qn, g 4 qn,
->               ef 4 qn,
+>               (staccato $ c 5 qn), (staccato $ g 4 qn),
+>               (staccato $ ef 4 qn),
 >               c 4 qn , rest 0]
  
 now we can play it:
@@ -224,9 +227,7 @@ With some fanciness:
 > addDur d ns = line [ n d | n <- ns]
 > staccato' :: Dur -> (Dur -> Music a) -> Music a
 > staccato' d n = n (d/8) :+: rest (7*d/8)
-> staccato :: Music a -> Music a
-> staccato (Prim (Note d p)) =
->   note (d/8) p :+: rest (7*d/8)
+
 > staccatoAll :: Dur -> [Dur -> Music a] -> Music a
 > staccatoAll d ns = line $ map (staccato' d) ns
 

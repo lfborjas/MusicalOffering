@@ -232,8 +232,8 @@ $ slideshow talk.rkt
        (list (t "In English:")
              (item "Take a list of intervals")
              (item "Get each abs pitch relative to the root")
-             (item "Turn those abs pitches into notes")
-             (item "Turn those notes into a line"))
+             (item "(e.g. [0, 0+2, 2+2, 4+3, 7+2]")
+             (item "Turn those abs pitches into a list of notes"))
        (list (t "In Haskell:")
              (para (haskell "mkScale :: [Int] -> Music Pitch -> [Music Pitch]"
                             "mkScale ints ( Prim ( Note d p)) ="
@@ -277,14 +277,18 @@ $ slideshow talk.rkt
                        "crabTheme = line $"
                        "[rest 0, c 4 hn, ef 4 hn,"
                        " g 4 hn, af 4 hn, b 3 hn,"
-                       "--...")))
+                       "--..."
+                       "(staccato $ ef 4 qn), c 4 qn]")))
        (list
         (t "Some helper functions")
         (para (haskell "lineToList :: Music a -> [Music a]"
                        "lineToList (Prim (Rest 0)) = []"
                        "lineToList (n :+: ns) = n : lineToList ns"
                        "retrograde :: Music Pitch -> Music Pitch"
-                       "retrograde = line . reverse . lineToList")))
+                       "retrograde = line . reverse . lineToList"
+                       "staccato :: Music a -> Music a"
+                       "staccato (Prim (Note d p)) ="
+                       "  note (d/8) p :+: rest (7*d/8)")))
        (list
         (t "And play that:")
         (para (haskell "crabCanon :: Music Pitch"
@@ -296,7 +300,8 @@ $ slideshow talk.rkt
 (slide
  #:title "Takeaways"
  (item "Rephrase problems in terms of existing solutions")
- (item "Find the glue in your language (in Haskell: lazy, partial, high-ordered, functions")
+ (item "Find the glue in your language (in Haskell: lazy, partial, high-ordered, functions)")
+ (item "A clever type system can be a powerful tool, not a boilerplate prison")
  (item "Programming can be a tool to approach art, too!"))
 
 (slide
