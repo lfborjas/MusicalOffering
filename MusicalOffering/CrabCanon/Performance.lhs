@@ -8,6 +8,7 @@ Euterpea has a few types that help us express musical ideas, as well as helper f
 > qnA :: Music Pitch
 > qnA  = note quarterNote concertA
 > qnA' = a 4 quarterNote
+> staccatos = (d 4 en) :+: dqnr :+: (fs 4 en)
 
 play qnA
 play qnA'
@@ -134,6 +135,24 @@ play $ twinkle :=: ((times 2 (rest hn)) :+: twinkle)
 >                           b 4 qn, c 5 qn, d 5 hn,
 >                           d 5 den, e 5 sn, d 5 en, c 5 en, b 4 qn, g 4 qn,
 >                           g 4 qn, e 4 qn, g 4 hn]
+> fJacques :: Music Pitch
+> fJacques =
+>   g 4 qn :+: a 4 qn :+: b 4 qn :+: g 4 qn :+:
+>   b 4 qn :+: c 5 qn :+: d 5 hn :+:
+>   d 5 den :+: e 5 sn :+: d 5 en :+: c 5 en :+: b 4 qn :+: g 4 qn :+:
+>   g 4 qn :+: e 4 qn :+: g 4 hn
+>
+> ludwigVan :: Music Pitch
+> ludwigVan =
+>   (g 1 en :=: g 2 en :=: g 3 en :=: g 4 en) :+:
+>   (g 1 en :=: g 2 en :=: g 3 en :=: g 4 en) :+:
+>   (g 1 en :=: g 2 en :=: g 3 en :=: g 4 en) :+:
+>   (ef 1 dhn :=: ef 2 ddhn :=: ef 3 dhn :=: ef 4 dhn) :+:
+>   denr :+:
+>   (f 1 en :=: f 2 en :=: f 3 en :=: f 4 en) :+:
+>   (f 1 en :=: f 2 en :=: f 3 en :=: f 4 en) :+:
+>   (f 1 en :=: f 2 en :=: f 3 en :=: f 4 en) :+:
+>   (d 1 dhn :=: d 2 dhn :=: d 3 dhn :=: d 4 dhn)
 
 
 play $ canon' (2, hn) shortFrereJacques

@@ -68,29 +68,51 @@ $ slideshow talk.rkt
 
 (slide
  #:title "A taste of Euterpea"
- ;TODO: add rests, tempo, instrument
  (t "What's a note?")
  (para (haskell "concertA = (A, 4) --Tuple"
                 "quarterNote = 1/4 --Rational"
                 "qnA = note quarterNote concertA"))
 
  'next
+ (t "Some functions that ship with Euterpea")
  (para (haskell "qnA' = a 4 qn"
-                "play qnA'"))
-
- 'next
- (t "What are notes good for?")
- (para (haskell "doReMi = c 4 qn :+: d 4 qn :+: e 4 qn"
-                "cMaj   = c 4 qn :=: e 4 qn :=: g 4 qn"
-                "play doReMi"
-                "play cMaj"
-                "play (doReMi :+: cMaj)")))
+                "play qnA'"
+                "staccatos = (d 4 en) :+: dqnr :+: (fs 4 en)"
+                "play (tempo 3 staccatos)"
+                "play $ tempo 3 staccatos"
+                "play $ instrument ChurchOrgan staccatos")))
 
 (slide
  #:title "Composing music"
- ; add a couple of cool tunes
- ; times function, beethoven, bach
- )
+ 'alts
+ (list (list
+        (para (haskell "doReMi = c 4 qn :+: d 4 qn :+: e 4 qn"
+                       "cMaj   = c 4 qn :=: e 4 qn :=: g 4 qn"
+                       "play doReMi"
+                       "play cMaj"
+                       "play (doReMi :+: cMaj)")))
+       (list
+        (t "A familiar tune")
+        (para (haskell "fJacques ="
+                       "  g 4 qn :+: a 4 qn :+: b 4 qn :+: g 4 qn :+:"
+                       "  b 4 qn :+: c 5 qn :+: d 5 hn :+:"
+                       "  d 5 den :+: e 5 sn :+: d 5 en :+: "
+                       "  c 5 en :+: b 4 qn :+: g 4 qn :+:"
+                       "  g 4 qn :+: e 4 qn :+: g 4 hn"
+                       "play $ instrument Flute $ tempo 2 fJacques")))
+       (list
+        (t "Another familiar tune")
+        (para (small (haskell "ludwigVan ="
+                              "  (g 1 en :=: g 2 en :=: g 3 en :=: g 4 en) :+:"
+                              "  (g 1 en :=: g 2 en :=: g 3 en :=: g 4 en) :+:"
+                              "  (g 1 en :=: g 2 en :=: g 3 en :=: g 4 en) :+:"
+                              "  (ef 1 dhn :=: ef 2 ddhn :=: ef 3 dhn :=: ef 4 dhn) :+:"
+                              "  denr :+:"
+                              "  (f 1 en :=: f 2 en :=: f 3 en :=: f 4 en) :+:"
+                              "  (f 1 en :=: f 2 en :=: f 3 en :=: f 4 en) :+:"
+                              "  (f 1 en :=: f 2 en :=: f 3 en :=: f 4 en) :+:"
+                              "  (d 1 dhn :=: d 2 dhn :=: d 3 dhn :=: d 4 dhn)"
+                              " play ludwigVan"))))))
 
 (slide
  #:title "The name of the wind"
@@ -150,7 +172,6 @@ $ slideshow talk.rkt
                 "(:=:) :: Music a -> Music a -> Music a")))
 
 (slide
- ;TODO: break this down
  #:title "Reasoning with types"
   (para (haskell "line :: [ Music a ] -> Music a"
                  "line [] = rest 0"
@@ -180,7 +201,25 @@ $ slideshow talk.rkt
 
 
 (slide
- #:title "Polymorphic functions")
+ #:title "Fancier functions"
+ 'alts
+ (list (list
+        (t "Haskell ships with some pretty cool functions")
+        (para (haskell "foldr (+) 0 [1,2,3] --6"
+                       "scanl (+) 10 [1,2,3] --[10,11,13,16]"
+                       "foldr1 (+) [1,2,3]"
+                       "[1,2,3] !! 1 --2"
+                       "take 2 [1,2,3] --[1,2]"
+                       "reverse [1,2,3] --[3,2,1]"
+                       "twice x = x*2"
+                       "map twice [1,2,3] --[2,4,6]")))
+       (list
+        (t "And their signatures are very interesting. Can you guess them?")
+        'next
+        (para (haskell "reverse :: [a] -> [a]"
+                       "take :: Int -> [a] -> [a]"
+                       "scanl :: (b -> a -> b) -> b -> [a] -> [b]"
+                       "(!!) :: [a] -> Int -> a")))))
 
 (slide
  #:title "Batteries included"
@@ -198,17 +237,7 @@ $ slideshow talk.rkt
  (t "How about:")
  (para (haskell "mystery2 :: [ Music a ] -> Music a"
                 "mystery2 ms = line $ map (transpose 12) ms"
-                "mystery1 [d 4 qn, fs 4 qn] :+: mystery2 [d 4 qn, fs 4 qn]"))
-
- 'next
- (para "Noticed the" (tt "$") "syntactic sugar?")
- (para (haskell "line (map (transpose 12) ms)")))
-
-(slide
- #:title "A Plethora more in the Prelude"
- ;talk about scanl, foldr, foldr, fold1, take, reverse
- )
-
+                "mystery1 [d 4 qn, fs 4 qn] :+: mystery2 [d 4 qn, fs 4 qn]")))
 
 (slide
  #:title "Haskell: Curry"
