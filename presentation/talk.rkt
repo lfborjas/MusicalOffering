@@ -22,7 +22,7 @@ $ slideshow talk.rkt
 (define (haskell . lines)
   (define (syntax-color token)
     (define match (λ (p) (regexp-match p token)))
-    (define color (cond [(or (match #px"^[[:upper:]][^[:space:]]*")
+    (define color (cond [(or (match #px"[[:upper:]][^[:space:]]*")
                              (match #px":[^[:alpha:][:digit:]]:"))     "SteelBlue"] ;; types and type constructors
                         [(match #rx"--.*")                             "ForestGreen"] ;; comments
                         [(match #rx"^(let|in|case|where|of|data|type)$") "Orange"] ;; keywords
@@ -212,6 +212,18 @@ $ slideshow talk.rkt
                 "chord = foldr1 (:=:)")))
 
 (slide
+ #:title "Haskell is lazy"
+
+ (t "And lazy evaluation is also a default:")
+ (para (haskell "forever :: Music x -> [ Music x ]"
+                "forever m = m : forever m"
+                "foreverA o dur = forever $ a o dur"
+                "foreverA4qn = foreverA 4 qn"))
+
+ (t "No explosions, until...")
+ (para (haskell "play $ line $ take 2 foreverA4qn")))
+
+(slide
  #:title "Example: scales"
  (t "How would we build a scale?")
  'alts
@@ -226,26 +238,26 @@ $ slideshow talk.rkt
              (item "Turn those abs pitches into notes")
              (item "Turn those notes into a line"))
        (list (t "In Haskell:")
-             (para (haskell "mkScale :: [Int] -> Music Pitch -> Music Pitch"
+             (para (haskell "mkScale :: [Int] -> Music Pitch -> [Music Pitch]"
                             "mkScale ints (Prim (Note d p)) ="
-                            "  line $ "
                             "  map (note qn . pitch) $"
                             "  scanl (+) (absPitch p) ints")))
        (list (t "Which we can use to define stuff:")
              (para (haskell "pentatonic = mkScale [2,2,3,2]"
-                            "pentatonic $ fs 4 qn")))))
-
-(slide
- #:title "Haskell is lazy"
-
- (t "And lazy evaluation is also a default:")
- (para (haskell "forever :: Music x -> [ Music x ]"
-                "forever m = m : forever m"
-                "foreverA o dur = forever $ a o dur"
-                "foreverA4qn = foreverA 4 qn"))
-
- (t "No explosions, until...")
- (para (haskell "play $ line $ take 2 foreverA4qn")))
+                            "pentatonic $ fs 4 qn")))
+       (list (t "Or we can go crazy")
+             (para (haskell "mkScale ints (Prim (Note d p)) ="
+                            "  map (note qn . pitch) $"
+                            "  scanl (+) (absPitch p) (cycle ints)"))
+             (para (haskell "mkChord scale degrees ="
+                            "  chord $"
+                            "  map ((scale!!) . (subtract 1))"
+                            "      degrees")))
+       (list (t "What do these do?")
+             'next
+             (para (haskell "cMaj = mkScale [2,2,1,2,2,2,1] (c 4 qn)"
+                            "play $ line $ take 16 cMaj"
+                            "play $ mkChord cMaj [1,5,8,9,11]")))))
 
 (slide
  #:title "Let's use our knowledge for music!"

@@ -14,7 +14,7 @@ play qnA'
 
 > doReMi :: Music Pitch
 > doReMi = c 4 qn :+: d 4 qn :+: e 4 qn
-> cMaj   = c 4 qn :=: e 4 qn :=: g 4 qn
+> cMaj''   = c 4 qn :=: e 4 qn :=: g 4 qn
 
 
 Using what we already know, plus the true power of pattern matching:
@@ -32,15 +32,32 @@ Using what we already know, plus the true power of pattern matching:
 >   note d (trans 7 root) :=:
 >   note d (pc, o+1)
 >
-> mkScale :: [Int] -> Music Pitch -> Music Pitch
-> mkScale ints (Prim (Note d p)) = line $
->                                  map (note qn . pitch) $
->                                  scanl (+) (absPitch p) ints
+> mkScale' :: [Int] -> Music Pitch -> [Music Pitch]
+> mkScale' ints (Prim (Note d p)) = map (note qn . pitch) $
+>                                   scanl (+) (absPitch p) ints
+>
+> mkScale :: [Int] -> Music Pitch -> [Music Pitch]
+> mkScale ints (Prim (Note d p)) = map (note qn . pitch) $
+>                                  scanl (+) (absPitch p) (cycle ints)
+>
+> mkChord :: [Music Pitch] -> [Int] -> Music Pitch
+> mkChord scale degrees =
+>   chord $
+>   map ((scale!!) . (subtract 1)) degrees
 
 Where:
 https://github.com/Euterpea/Euterpea/blob/6635e483cf80ec8ae67613c40e8d61e475f4742d/Euterpea/Music/Note/Music.hs#L134
 
 scanl (+) 4 [2,1,2]
+
+λ> cMaj = mkScale [2,2,1,2,2,2,1] (c 4 qn)
+λ> mkChord cMaj [1,3,5,8]
+Prim (Note (1 % 4) (C,4)) :=: (Prim (Note (1 % 4) (E,4)) :=: (Prim (Note (1 % 4) (G,4)) :=: (Prim (Note (1 % 4) (C,5)) :=: Prim (Rest (0 % 1)))))
+λ> play $ mkChord cMaj [1,3,5,8]
+λ> play $ mkChord cMaj [1,3,5,8,9]
+λ> play $ mkChord cMaj [1,3,5,8,9,11]
+λ> play $ line $ take 8 cMaj
+
 
 Some higher order functions
 
