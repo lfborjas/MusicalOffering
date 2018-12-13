@@ -68,7 +68,7 @@ $ slideshow talk.rkt
 
 (slide
  #:title "A taste of Euterpea"
-
+ ;TODO: add rests, tempo, instrument
  (t "What's a note?")
  (para (haskell "concertA = (A, 4) --Tuple"
                 "quarterNote = 1/4 --Rational"
@@ -86,6 +86,10 @@ $ slideshow talk.rkt
                 "play cMaj"
                 "play (doReMi :+: cMaj)")))
 
+(slide
+ #:title "Composing music"
+ ; add a couple of cool tunes
+ )
 
 (slide
  #:title "Types, types, types"
@@ -145,6 +149,7 @@ $ slideshow talk.rkt
                 "(:=:) :: Music a -> Music a -> Music a")))
 
 (slide
+ ;TODO: break this down
  #:title "Reasoning with types"
   (para (haskell "line :: [ Music a ] -> Music a"
                  "line [] = rest 0"
@@ -155,7 +160,6 @@ $ slideshow talk.rkt
 
 (slide
  #:title "Pattern matching, TNG"
- (t "A fancier type of pattern matching")
  'alts
  (list (list 
         (para (haskell "majChord :: Music Pitch -> Music Pitch"
@@ -172,6 +176,10 @@ $ slideshow talk.rkt
                        "  note d (trans 7 r) :=:"
                        "  note d (pc, o+1))"
                        "majChord _ = error 'only works for notes!'")))))
+
+
+(slide
+ #:title "Polymorphic functions")
 
 (slide
  #:title "Batteries included"
