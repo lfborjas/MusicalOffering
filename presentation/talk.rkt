@@ -174,7 +174,7 @@ $ slideshow talk.rkt
                        "majChord _ = error 'only works for notes!'")))))
 
 (slide
- #:title "Transcending"
+ #:title "Batteries included"
  ; mention things like map and foldl/scanl, plus currying and composition?
  ; what about `$`
  (t "Guess what these functions do:")
@@ -194,6 +194,11 @@ $ slideshow talk.rkt
  'next
  (para "Noticed the" (tt "$") "syntactic sugar?")
  (para (haskell "line (map (transpose 12) ms)")))
+
+(slide
+ #:title "A Plethora more in the Prelude"
+ ;talk about scanl, foldr, foldr, fold1, take, reverse
+ )
 
 
 (slide
