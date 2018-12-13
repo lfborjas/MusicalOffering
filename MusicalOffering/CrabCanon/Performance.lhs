@@ -44,6 +44,9 @@ Using what we already know, plus the true power of pattern matching:
 > mkChord scale degrees =
 >   chord $
 >   map ((scale!!) . (subtract 1)) degrees
+>
+> pentatonic = mkScale' [2,2,3,2]
+> blackKeys  = pentatonic $ fs 4 qn
 
 Where:
 https://github.com/Euterpea/Euterpea/blob/6635e483cf80ec8ae67613c40e8d61e475f4742d/Euterpea/Music/Note/Music.hs#L134
@@ -226,6 +229,11 @@ With some fanciness:
 >   note (d/8) p :+: rest (7*d/8)
 > staccatoAll :: Dur -> [Dur -> Music a] -> Music a
 > staccatoAll d ns = line $ map (staccato' d) ns
+
+The retrogade of this won't revert the sub (nested) lines created by
+staccatoAll or by addDur, so it's not a true retrogade!
+Wonder if a more specialized function of retrogade would leave the
+staccatos alone but revert the other kinds of sub-lines .
 
 > crabTheme' = rest 0 :+:
 >              addDur hn [c 4, ef 4, g 4, af 4, b 3] :+:

@@ -22,7 +22,7 @@ $ slideshow talk.rkt
 (define (haskell . lines)
   (define (syntax-color token)
     (define match (λ (p) (regexp-match p token)))
-    (define color (cond [(or (match #px"[[:upper:]][^[:space:]]*")
+    (define color (cond [(or (match #px"^([^[:alpha:]])?[[:upper:]][^[:space:]]*")
                              (match #px":[^[:alpha:][:digit:]]:"))     "SteelBlue"] ;; types and type constructors
                         [(match #rx"--.*")                             "ForestGreen"] ;; comments
                         [(match #rx"^(let|in|case|where|of|data|type)$") "Orange"] ;; keywords
@@ -159,14 +159,14 @@ $ slideshow talk.rkt
  'alts
  (list (list 
         (para (haskell "majChord :: Music Pitch -> Music Pitch"
-                       "majChord (Prim (Note d root)) = "
+                       "majChord ( Prim ( Note d root)) = "
                        "  note d root :=:"
                        "  note d (trans 4 root) :=:"
                        "  note d (trans 7 root)"
                        "majChord _ = error 'only works for notes!'")))
        (list
         (para (haskell "majChord :: Music Pitch -> Music Pitch"
-                       "majChord (Prim (Note d r@(pc, oct))) = "
+                       "majChord ( Prim ( Note d r@(pc, oct))) = "
                        "  note d r :=:"
                        "  note d (trans 4 r) :=:"
                        "  note d (trans 7 r) :=:"
@@ -226,7 +226,7 @@ $ slideshow talk.rkt
  'alts
  (list (list (t "What we want:")
              (para (haskell "mkScale [2,2,3,2] (fs 4 qn)"
-                            "--Fs, Gs, As, Cs, Ds")))
+                            "--Fs,Gs,As,Cs,Ds")))
        (list (t "In Music:")
              (bitmap "black_keys.png"))
        (list (t "In English:")
@@ -236,14 +236,15 @@ $ slideshow talk.rkt
              (item "Turn those notes into a line"))
        (list (t "In Haskell:")
              (para (haskell "mkScale :: [Int] -> Music Pitch -> [Music Pitch]"
-                            "mkScale ints (Prim (Note d p)) ="
+                            "mkScale ints ( Prim ( Note d p)) ="
                             "  map (note qn . pitch) $"
                             "  scanl (+) (absPitch p) ints")))
        (list (t "Which we can use to define stuff:")
              (para (haskell "pentatonic = mkScale [2,2,3,2]"
-                            "pentatonic $ fs 4 qn")))
+                            "blackKeys  = pentatonic $ fs 4 qn"
+                            "play $ line blackKeys")))
        (list (t "Or we can go crazy")
-             (para (haskell "mkScale ints (Prim (Note d p)) ="
+             (para (haskell "mkScale ints ( Prim ( Note d p)) ="
                             "  map (note qn . pitch) $"
                             "  scanl (+) (absPitch p) (cycle ints)"))
              (para (haskell "mkChord scale degrees ="
@@ -255,6 +256,48 @@ $ slideshow talk.rkt
              (para (haskell "cMaj = mkScale [2,2,1,2,2,2,1] (c 4 qn)"
                             "play $ line $ take 16 cMaj"
                             "play $ mkChord cMaj [1,5,8,9,11]")))))
+
+(slide
+ #:title "A musical puzzle"
+ (t "Bach's 'Crab Canon'")
+ (para "All the score says is"
+       (tt "Canon 1 a 2"))
+ (bitmap "canon_cancrizans.png"))
+
+(slide
+ #:title "Solving the puzzle"
+ 'alts
+ (list (list
+        (para "Hint: there's a weird extra clef..."))
+       (list
+        (para "We need to play it from both ends!"))
+       (list
+        (t "Let's transcribe it first")
+        (para (haskell "crabTheme :: Music Pitch"
+                       "crabTheme = line $"
+                       "[rest 0, c 4 hn, ef 4 hn,"
+                       " g 4 hn, af 4 hn, b 3 hn,"
+                       "--...")))
+       (list
+        (t "Some helper functions")
+        (para (haskell "lineToList :: Music a -> [Music a]"
+                       "lineToList (Prim (Rest 0)) = []"
+                       "lineToList (n :+: ns) = n : lineToList ns"
+                       "retrograde :: Music Pitch -> Music Pitch"
+                       "retrograde = line . reverse . lineToList")))
+       (list
+        (t "And play that:")
+        (para (haskell "crabCanon :: Music Pitch"
+                       "crabCanon ="
+                       "  instrument Harpsichord $"
+                       "  crabTheme :=:"
+                       "  retrograde crabTheme")))))
+
+(slide
+ #:title "Takeaways"
+ (item "Rephrase problems in terms of existing solutions")
+ (item "Find the glue in your language (in Haskell: lazy, partial, high-ordered, functions")
+ (item "Programming can be a tool to approach art, too!"))
 
 (slide
  #:title "Let's use our knowledge for music!"
@@ -272,20 +315,6 @@ $ slideshow talk.rkt
                       "      m2 = line (map pcToQn [F,F,E,E,D,D]) :+: c 4 hn"
                       "      m3 = line (map pcToQn [G,G,F,F,E,E]) :+: d 4 hn"
                       "  in line [m1, m2, m3, m3, m1, m2]")))))
-
-
-(slide
- #:title "A musical puzzle"
- (t "Bach's 'Crab Canon'")
- (para "All the score says is"
-       (tt "Canon 1 a 2"))
- (bitmap "canon_cancrizans.png"))
-
-(slide
- #:title "Takeaways"
- (item "Rephrase problems in terms of existing solutions")
- (item "Find the glue in your language (in Haskell: lazy, partial, high-ordered, functions")
- (item "Programming can be a tool to approach art, too!"))
 
 (slide
  #:title "Playing with music"
