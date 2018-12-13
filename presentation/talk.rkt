@@ -151,10 +151,7 @@ $ slideshow talk.rkt
                  "line (m:ms) = m :+: line ms"
                  "line [c 4 qn, e 4 qn, g 4 qn, c 5 qn]"
                  "chord :: [ Music a ] -> Music a"
-                 "chord [c 4 qn, e 4 qn, g 4 qn, c 5 qn]"))
-
-
-)
+                 "chord [c 4 qn, e 4 qn, g 4 qn, c 5 qn]")))
 
 (slide
  #:title "Pattern matching, TNG"
@@ -276,6 +273,20 @@ $ slideshow talk.rkt
                       "      m3 = line (map pcToQn [G,G,F,F,E,E]) :+: d 4 hn"
                       "  in line [m1, m2, m3, m3, m1, m2]")))))
 
+
+(slide
+ #:title "A musical puzzle"
+ (t "Bach's 'Crab Canon'")
+ (para "All the score says is"
+       (tt "Canon 1 a 2"))
+ (bitmap "canon_cancrizans.png"))
+
+(slide
+ #:title "Takeaways"
+ (item "Rephrase problems in terms of existing solutions")
+ (item "Find the glue in your language (in Haskell: lazy, partial, high-ordered, functions")
+ (item "Programming can be a tool to approach art, too!"))
+
 (slide
  #:title "Playing with music"
  (para (haskell "times 0 m = rest 0; times n m = m :+: times (n - 1) m"
@@ -299,18 +310,6 @@ $ slideshow talk.rkt
  (para (haskell "play $ canon (2, hn) twinkle"
                 "play $ canon (2, qn) twinkle"
                 "play $ canon (2, en) twinkle")))
-
-(slide
- #:title "A cooler puzzle"
- (t "Bach's 'Crab Canon'")
- (tt "Canon 1 a 2")
- (bitmap "canon_cancrizans.png"))
-
-(slide
- #:title "Takeaways"
- (item "Rephrase problems in terms of existing solutions")
- (item "Find the glue in your language (in Haskell: lazy, partial, high-ordered, functions")
- (item "Programming can be a tool to approach art, too!"))
 
 
 #|

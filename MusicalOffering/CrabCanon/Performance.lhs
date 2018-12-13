@@ -138,8 +138,16 @@ First, a helper function to transcribe and perform
 
 > addDur :: Dur -> [Dur -> Music a] -> Music a
 > addDur d ns = line [ n d | n <- ns]
-> stacatto :: Dur -> [Dur -> Music a] -> Music a
-> stacatto d ns = line [ n (d/8) :+: rest (1 - d/8) | n <- ns]
+> staccato :: Dur -> (Dur -> Music a) -> Music a
+> staccato d n = n (d/8) :+: rest (7*d/8)
+> staccatoAll :: Dur -> [Dur -> Music a] -> Music a
+> staccatoAll d ns = line $ map (staccato d) ns
+> lineToList' :: Music a -> [Music a]
+> lineToList' (Prim (Rest 0)) = []
+> lineToList' (n :+: ns) = n : lineToList' ns
+> lineToList' _ = error "Need to provide a line!"
+> retrograde :: Music Pitch -> Music Pitch
+> retrograde = line . reverse . lineToList'
 
 had an error before:
 stacatto d n = n (d/8) 
@@ -187,8 +195,11 @@ play $ tempo (2) crabTheme
 >                        f  5, d 5, g 4, d 5,
 >                        c  5, d 5, ef 5, f 5,
 >                        ef 5, d 5, c 5, b 4] :+:
->             stacatto qn [c 5, g 4, ef 4] :+:
->             c 4 qn
+>             staccatoAll qn [c 5, g 4, ef 4] :+:
+>             c 4 qn :+: rest 0
  
+now we can play it:
 
+play $ tempo (2) crabTheme
+play $ (instrument Harpsichord crabTheme) :=: (instrument Harpsichord (retrograde $ crabTheme))
 
