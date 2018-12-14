@@ -183,16 +183,22 @@ $ slideshow talk.rkt
 (slide
  #:title "Pattern matching, TNG"
  'alts
- (list (list 
+ (list (list
         (para (haskell "majChord :: Music Pitch -> Music Pitch"
-                       "majChord ( Prim ( Note d root)) = "
+                       "majChord n ="
+                       "  n :=:"
+                       "  transpose 4 n :=:"
+                       "  transpose 7 n")))
+       (list 
+        (para (haskell "majChord :: Music Pitch -> Music Pitch"
+                       "majChord (Prim (Note d root)) = "
                        "  note d root :=:"
                        "  note d (trans 4 root) :=:"
                        "  note d (trans 7 root)"
                        "majChord _ = error 'only works for notes!'")))
        (list
         (para (haskell "majChord :: Music Pitch -> Music Pitch"
-                       "majChord ( Prim ( Note d r@(pc, oct))) = "
+                       "majChord (Prim (Note d r@(pc, oct))) = "
                        "  note d r :=:"
                        "  note d (trans 4 r) :=:"
                        "  note d (trans 7 r) :=:"
@@ -219,8 +225,13 @@ $ slideshow talk.rkt
         (para (haskell "reverse :: [a] -> [a]"
                        "take :: Int -> [a] -> [a]"
                        "scanl :: (b -> a -> b) -> b -> [a] -> [b]"
-                       "(!!) :: [a] -> Int -> a")))))
+                       "(!!) :: [a] -> Int -> a")))
+       (list
+        (t "You can use them for music:")
+        (para (haskell "mystery1 :: [Music a] -> Music a"
+                       "mystery1 ns = foldr1 (:+:) ns")))))
 
+#;
 (slide
  #:title "Batteries included"
  ; mention things like map and foldl/scanl, plus currying and composition?
@@ -233,6 +244,7 @@ $ slideshow talk.rkt
  'next
  (t "Yep, that's our good old line function, refactored!"))
 
+#;
 (slide
  (t "How about:")
  (para (haskell "mystery2 :: [ Music a ] -> Music a"

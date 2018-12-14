@@ -26,19 +26,27 @@ https://imslp.org/wiki/Toccata_and_Fugue_in_D_minor%2C_BWV_565_(Bach%2C_Johann_S
 
 Using what we already know, plus the true power of pattern matching:
 
-> majChord :: Music Pitch -> Music Pitch
-> majChord (Prim (Note d root)) = note d root :=:
->                                 note d (trans 4 root) :=:
->                                 note d (trans 7 root)
-> majChord _ = error "Only works for notes!"
->
+> majChord'' :: Music Pitch -> Music Pitch
+> majChord'' n =
+>   n :=:
+>   transpose 4 n :=:
+>   transpose 7 n
+
 > majChord' :: Music Pitch -> Music Pitch
-> majChord' (Prim (Note d root@(pc, o))) =
+> majChord' (Prim (Note d root)) =
+>   note d root :=:
+>   note d (trans 4 root) :=:
+>   note d (trans 7 root)
+> majChord' _ = error "Only works for notes!"
+>
+> majChord :: Music Pitch -> Music Pitch
+> majChord (Prim (Note d root@(pc, o))) =
 >   note d root :=:
 >   note d (trans 4 root) :=:
 >   note d (trans 7 root) :=:
 >   note d (pc, o+1)
->
+> majChord _ = error "Only works for notes!"
+> 
 > mkScale' :: [Int] -> Music Pitch -> [Music Pitch]
 > mkScale' ints (Prim (Note d p)) = map (note qn . pitch) $
 >                                   scanl (+) (absPitch p) ints
