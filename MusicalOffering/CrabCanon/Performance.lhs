@@ -23,6 +23,9 @@ Fancy stuff:
 https://imslp.org/wiki/File:Beethoven-Liszt_Symphony-5.pdf
 https://imslp.org/wiki/Toccata_and_Fugue_in_D_minor%2C_BWV_565_(Bach%2C_Johann_Sebastian)
 
+> twice x = x*2
+> plus2 x = x+2
+> 
 
 Using what we already know, plus the true power of pattern matching:
 

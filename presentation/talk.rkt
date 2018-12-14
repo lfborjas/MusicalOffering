@@ -221,14 +221,17 @@ $ slideshow talk.rkt
                        "take 2 [1,2,3] --[1,2]"
                        "reverse [1,2,3] --[3,2,1]"
                        "twice x = x*2"
-                       "map twice [1,2,3] --[2,4,6]")))
+                       "map twice [1,2,3] --[2,4,6]"
+                       "plus2 x = x+2"
+                       "map (twice . plus2) [1,2,3] --[6,8,10]")))
        (list
         (t "And their signatures are very interesting. Can you guess them?")
         'next
         (para (haskell "reverse :: [a] -> [a]"
                        "take :: Int -> [a] -> [a]"
                        "scanl :: (b -> a -> b) -> b -> [a] -> [b]"
-                       "(!!) :: [a] -> Int -> a")))
+                       "(!!) :: [a] -> Int -> a"
+                       "(.) :: (b -> c) -> (a -> b) -> a -> c")))
        (list
         (t "You can use them for music:")
         (para (haskell "mystery1 :: [Music a] -> Music a"
