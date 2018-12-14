@@ -155,7 +155,7 @@ play $ twinkle :=: ((times 2 (rest hn)) :+: twinkle)
 >   (g 1 en :=: g 2 en :=: g 3 en :=: g 4 en) :+:
 >   (g 1 en :=: g 2 en :=: g 3 en :=: g 4 en) :+:
 >   (g 1 en :=: g 2 en :=: g 3 en :=: g 4 en) :+:
->   (ef 1 dhn :=: ef 2 ddhn :=: ef 3 dhn :=: ef 4 dhn) :+:
+>   (ef 1 dhn :=: ef 2 dhn :=: ef 3 dhn :=: ef 4 dhn) :+:
 >   denr :+:
 >   (f 1 en :=: f 2 en :=: f 3 en :=: f 4 en) :+:
 >   (f 1 en :=: f 2 en :=: f 3 en :=: f 4 en) :+:

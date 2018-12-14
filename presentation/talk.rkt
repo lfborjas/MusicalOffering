@@ -106,7 +106,7 @@ $ slideshow talk.rkt
                               "  (g 1 en :=: g 2 en :=: g 3 en :=: g 4 en) :+:"
                               "  (g 1 en :=: g 2 en :=: g 3 en :=: g 4 en) :+:"
                               "  (g 1 en :=: g 2 en :=: g 3 en :=: g 4 en) :+:"
-                              "  (ef 1 dhn :=: ef 2 ddhn :=: ef 3 dhn :=: ef 4 dhn) :+:"
+                              "  (ef 1 dhn :=: ef 2 dhn :=: ef 3 dhn :=: ef 4 dhn) :+:"
                               "  denr :+:"
                               "  (f 1 en :=: f 2 en :=: f 3 en :=: f 4 en) :+:"
                               "  (f 1 en :=: f 2 en :=: f 3 en :=: f 4 en) :+:"
@@ -176,9 +176,12 @@ $ slideshow talk.rkt
   (para (haskell "line :: [ Music a ] -> Music a"
                  "line [] = rest 0"
                  "line (m:ms) = m :+: line ms"
-                 "line [c 4 qn, e 4 qn, g 4 qn, c 5 qn]"
-                 "chord :: [ Music a ] -> Music a"
-                 "chord [c 4 qn, e 4 qn, g 4 qn, c 5 qn]")))
+                 "line [c 4 qn, e 4 qn, g 4 qn, c 5 qn]"))
+  (t "How would we build the chord function?")
+  'next
+  (para (haskell "chord :: [Music a] -> Music a"
+                 "chord [] = rest 0"
+                 "chord (m:ms) = m :=: chord ms")))
 
 (slide
  #:title "Pattern matching, TNG"
